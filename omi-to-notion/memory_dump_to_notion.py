@@ -252,4 +252,4 @@ if __name__ == "__main__":
          logging.error("CRITICAL: Missing required environment variables (OPENAI_API_KEY, NOTION_API_KEY, NOTION_DATABASE_ID). Check .env file. Exiting.")
          exit(1)
     logging.info("Starting Uvicorn server...")
-    uvicorn.run(app, host="127.0.0.1", port=8000) # Runs on http://127.0.0.1:8000
+    uvicorn.run(app, host="127.0.0.1", port=8080) # Runs on http://127.0.0.1:8000
