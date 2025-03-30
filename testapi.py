@@ -44,8 +44,8 @@ def webhook(payload: dict, uid: str): # Changed 'memory' to 'payload' for clarit
     # --- You can now use 'full_text_from_this_request' or 'extracted_texts' ---
     # Example: Check if a certain keyword is present
     if "hello" in full_text_from_this_request.lower():
-        print("Greeting detected!")
-
+        return {"message": "Greeting detected!"}
+    
     # --- Return the response ---
     return {"message": full_text_from_this_request}
 
