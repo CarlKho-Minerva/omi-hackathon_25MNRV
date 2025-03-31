@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> <!-- Mobile focus -->
+    <title>Omi Wrapped - Daily Reflection</title>
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Link Your Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌀</text></svg>">
+    <!-- Simple Favicon -->
+</head>
+
+<body>
+    <!-- Loading indicator -->
+    <div id="loading-indicator">Loading your reflection... ✨</div>
+
+    <!-- Swiper Container -->
+    <div class="swiper-container" id="reflection-swiper" style="display: none;"> <!-- Hide until loaded -->
+        <div class="swiper-wrapper" id="swiper-wrapper-main">
+            <!-- Slides will be injected here by JavaScript -->
+            <!-- Example Structure (for reference):
+            <div class="swiper-slide" id="slide-intro">
+                <h1>Slide 1 Title</h1>
+                <p>Content...</p>
+            </div>
+            <div class="swiper-slide" id="slide-gratitude">
+                <h1>Gratitude</h1>
+                 <ul><li>Point 1</li></ul>
+            </div>
+             -->
+        </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+
+        <!-- Add Navigation (Optional) -->
+        <!-- <div class="swiper-button-prev"></div> -->
+        <!-- <div class="swiper-button-next"></div> -->
+    </div>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Your Custom JS -->
+    <script src="script.js"></script>
+</body>
+
+</html>

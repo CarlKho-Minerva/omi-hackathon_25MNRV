@@ -1,0 +1,80 @@
+/* Basic Reset & Body Styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    position: relative;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #1a1a2e; /* Dark blue/purple background */
+    color: #e0e0e0; /* Light text */
+    overflow: hidden; /* Prevent body scroll */
+}
+
+/* Loading Indicator */
+#loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    font-size: 1.5em;
+    color: #9a86ff; /* A lighter purple */
+}
+
+/* Swiper Container - ensure it takes up space */
+.swiper-container {
+    width: 100%;
+    height: 100%;
+    /* display: none; initially set via style attribute in HTML */
+}
+
+/* Basic Slide Styling (more later) */
+.swiper-slide {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    text-align: center;
+    padding: 40px 20px; /* Add some padding */
+    height: 100%; /* Ensure slides try to take full height */
+    overflow-y: auto; /* Allow scrolling within slide if content overflows */
+}
+
+/* Example styling for content */
+ .swiper-slide h1 {
+     font-size: 2.5em;
+     margin-bottom: 20px;
+     color: #f0f0f0;
+ }
+
+ .swiper-slide p, .swiper-slide li {
+     font-size: 1.1em;
+     line-height: 1.6;
+     max-width: 80%; /* Prevent text from going too wide */
+     margin-bottom: 15px;
+ }
+ .swiper-slide ul {
+    list-style: none; /* Remove default bullets */
+    padding: 0;
+    margin-top: 15px;
+}
+ .swiper-slide ul li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.05); /* Subtle background for list items */
+    border-radius: 8px;
+}
+
+/* Swiper Pagination dots */
+.swiper-pagination-bullet {
+    background: #ffffff; /* White dots */
+    opacity: 0.6;
+}
+
+.swiper-pagination-bullet-active {
+    opacity: 1;
+    background: #9a86ff; /* Active dot color */
+}

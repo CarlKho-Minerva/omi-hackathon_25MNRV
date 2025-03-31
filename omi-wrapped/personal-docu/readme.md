@@ -77,3 +77,9 @@ to run manually: `gcloud scheduler jobs run omi-daily-reflection-job --project=o
 ![alt text](image-1.png)
 
 SOO USEFUL ACTUALLY
+
+# Frontend stuff on gs://bucket-omi-wrapped
+live site: `https://storage.googleapis.com/bucket-omi-wrapped/index.html`
+
+gsutil iam ch allUsers:objectViewer gs://bucket-omi-wrapped
+gsutil web set -m index.html gs://bucket-omi-wrapped
