@@ -69,5 +69,6 @@ IMPORTANT: Find the line user_id = request.args.get("uid", os.environ.get("TARGE
 2025-03-31 15:12:29,112 - INFO - 127.0.0.1 - - [31/Mar/2025 15:12:29] "GET / HTTP/1.1" 200 -
 
 # Cloud SCheduler
+edit ehre: https://console.cloud.google.com/cloudscheduler/jobs/edit/us-west2/omi-daily-reflection-job?authuser=1&invt=AbtifA&project=omi-mentor-hackathon
 
-to run manually: gcloud scheduler jobs run omi-daily-reflection-job --project=omi-mentor-hackathon
+to run manually: `gcloud scheduler jobs run omi-daily-reflection-job --project=omi-mentor-hackathon --location=us-west2`
