@@ -99,9 +99,9 @@ async def save_to_firestore_background(uid: str, memory_data: dict):
     except Exception as e:
         logging.error(f"Unexpected error saving data for UID {uid}, Memory ID {memory_data.get('memory_id')}: {e}")
 
+# --- Webhook Endpoint ---
 print("DEBUG: Defining endpoint @app.post('/memory_webhook')") # <<< ADD THIS LINE
 
-# --- Webhook Endpoint ---
 @app.post('/memory_webhook') # Changed path slightly for clarity
 async def memory_webhook_receiver(request: Request, background_tasks: BackgroundTasks, uid: str):
     """Receives memory creation webhook, extracts data, and queues Firestore save."""
