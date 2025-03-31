@@ -1,14 +1,19 @@
-run ngrok https 8080 or whatever uvicorn's port is in main.py then paste that in omi app
-
 https://aistudio.google.com/prompts/15aZzCpMc7jUS60GQdR7GGM2rs3ggZDd3
 
 # Firestore Setup
+run ngrok https 8080 or whatever uvicorn's port is in main.py then paste that in omi app
+
 firestore: https://console.cloud.google.com/firestore/databases/-default-/data/panel/raw_memories/ckVQW3MVAoenlOdYhHLt5K3zPpW2_2025-03-31?authuser=1&invt=AbthxQ&project=omi-mentor-hackathon
 woo
 ![alt text](image.png)
 
 # Cloud Functions - WOOOO
 https://console.cloud.google.com/functions/details/us-west2/daily-reflection-processor?project=omi-mentor-hackathon
+
+
+to run locally: `functions-framework --target daily_process_memories --port 8081 --debug`
+
+
 todo:
 multiple user support for
 ```
@@ -64,3 +69,5 @@ IMPORTANT: Find the line user_id = request.args.get("uid", os.environ.get("TARGE
 2025-03-31 15:12:29,112 - INFO - 127.0.0.1 - - [31/Mar/2025 15:12:29] "GET / HTTP/1.1" 200 -
 
 # Cloud SCheduler
+
+to run manually: gcloud scheduler jobs run omi-daily-reflection-job --project=omi-mentor-hackathon
