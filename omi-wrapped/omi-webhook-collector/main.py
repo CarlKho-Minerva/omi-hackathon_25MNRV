@@ -1,4 +1,3 @@
-
 import os
 import logging
 import json
@@ -152,6 +151,52 @@ async def memory_webhook_receiver(request: Request, background_tasks: Background
     logging.info(f"Queued memory {memory_id} for Firestore save. Returning 200 OK to Omi.")
     # Return a simple success message immediately
     return {"message": "Memory received and queued for processing."}
+
+# --- NEW Endpoint to Serve Processed Data ---
+@app.get("/get_reflection")
+async def get_daily_reflection(uid: str, date: str | None = None):
+    """
+    Fetches the processed daily reflection data for a given user and date.
+    Defaults to today's date if 'date' query parameter is not provided.
+    """
+    logging.info(f"--- GET /get_reflection request for UID: {uid}, Date: {date} ---")
+
+    if not firestore_available:
+        logging.error("Firestore client not available for get_reflection.")
+        raise HTTPException(status_code=500, detail="Database connection error")
+
+    # Determine target date
+    if date:
+        # Optional: Add validation for YYYY-MM-DD format here if desired
+        target_date_str = date
+    else:
+        # Default to today's date in UTC
+        target_date_str = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+        logging.info(f"No date provided, defaulting to today: {target_date_str}")
+
+    doc_id = f"{uid}_{target_date_str}"
+    logging.info(f"Attempting to fetch reflection data from Firestore doc: {doc_id}")
+
+    try:
+        doc_ref = firestore_client.collection('daily_reflections').document(doc_id)
+        doc_snapshot = doc_ref.get()
+
+        if doc_snapshot.exists:
+            reflection_data = doc_snapshot.to_dict()
+            logging.info(f"Successfully fetched reflection data for {doc_id}")
+            # Optional: Convert any Timestamps back to ISO strings if needed by frontend
+            # (FastAPI usually handles datetime objects well in JSON responses)
+            return reflection_data # FastAPI automatically converts dict to JSON
+        else:
+            logging.warning(f"No reflection document found for {doc_id}")
+            raise HTTPException(status_code=404, detail=f"No reflection data found for date {target_date_str}")
+
+    except GoogleAPICallError as e:
+        logging.error(f"Firestore API error reading daily_reflections for {doc_id}: {e}")
+        raise HTTPException(status_code=500, detail="Database query error")
+    except Exception as e:
+        logging.error(f"Unexpected error reading daily_reflections for {doc_id}: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 # --- Root Endpoint for Health Check ---
 @app.get("/")
