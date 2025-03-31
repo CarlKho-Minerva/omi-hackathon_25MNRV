@@ -176,9 +176,8 @@ async function loadReflectionData() {
 
 }
 
-// --- Helper Function to Populate Task List (Placeholder for OMIW-9) ---
-// This function will be fully built in the next task
-function populateTaskList(actionItems, littleThings) {
+// REPLACE the existing populateTaskList function with this one:
+function populateTaskList(actionItems = [], littleThings = []) { // Add default empty arrays
     const taskListContainer = document.getElementById('task-list-container');
     const copyButton = document.getElementById('copy-tasks-button');
 
@@ -187,34 +186,114 @@ function populateTaskList(actionItems, littleThings) {
         return;
     }
 
-    taskListContainer.innerHTML = ''; // Clear placeholder
+    taskListContainer.innerHTML = ''; // Clear placeholder/previous content
 
+    // Combine tasks, adding a source and initial checked state
     const combinedTasks = [
-        ...actionItems.map(item => ({ text: item, source: 'direct' })),
-        ...littleThings.map(item => ({ text: item.suggested_action, source: 'suggested', mention: item.mention }))
+        ...actionItems.map((item, index) => ({
+            id: `task-direct-${index}`, // Unique ID for the checkbox/label pair
+            text: item,
+            source: 'direct',
+            checked: true // Default to included
+        })),
+        ...littleThings.map((item, index) => ({
+            id: `task-suggested-${index}`, // Unique ID
+            text: item.suggested_action || 'Suggested action missing',
+            source: 'suggested',
+            mention: item.mention || '', // Keep the original mention for context if needed
+            checked: true // Default to included
+        }))
     ];
+
+    // Store task state globally (or scoped if using modules/classes)
+    // This allows the copy function (in next task) to access checked state
+    window.omiWrappedTasks = combinedTasks; // Simple global storage for POC
 
     if (combinedTasks.length === 0) {
         taskListContainer.innerHTML = '<p>No action items identified for today.</p>';
-        copyButton.style.display = 'none'; // Hide copy button if no tasks
+        copyButton.style.display = 'none';
         return;
     }
 
-    // Placeholder: Just list them for now. Checkboxes and scrolling added in OMIW-9.
-    const listHtml = combinedTasks.map((task, index) => `
-        <div class="task-item">
-             <input type="checkbox" id="task-${index}" checked data-tasktext="${escapeHtml(task.text)}">
-             <label for="task-${index}">${escapeHtml(task.text)} ${task.source === 'suggested' ? '<span class="task-source">(from mention)</span>' : ''}</label>
-        </div>
-    `).join('');
+    // Generate HTML for each task item with checkbox
+    const listHtml = combinedTasks.map(task => `
+        <div class="task-item ${task.checked ? 'checked' : ''}" data-taskid="${task.id}">
+            <input
+                type="checkbox"
+                id="${task.id}"
+                ${task.checked ? 'checked' : ''}
+            >
+            <label for="${task.id}">
+                ${escapeHtml(task.text)}
+                ${task.source === 'suggested' ? '<span class="task-source">(Suggestion based on: "' + escapeHtml(task.mention) + '")</span>' : ''}
+             </label>
+         </div>
+     `).join('');
 
-    taskListContainer.innerHTML = `<div class="scrollable-tasks">${listHtml}</div>`; // Wrap in a div for scrolling later
+    // Add a wrapper for scrolling and gradient mask
+    taskListContainer.innerHTML = `<div class="scrollable-tasks">${listHtml}</div>`;
     copyButton.style.display = 'block'; // Show copy button
-    console.log('Task list populated (basic).');
-    // TODO OMIW-9: Add checkbox logic, scrolling styles, gradient mask
-    // TODO OMIW-10: Add copy button logic & modal
-}
+    console.log('Interactive task list populated.');
 
+    // --- Add Event Listeners for Checkboxes ---
+    const taskItems = taskListContainer.querySelectorAll('.task-item');
+    taskItems.forEach(item => {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        const taskId = item.dataset.taskid;
+
+        checkbox.addEventListener('change', (event) => {
+            // Find the corresponding task in our global state and update its checked status
+            const taskIndex = window.omiWrappedTasks.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                window.omiWrappedTasks[taskIndex].checked = event.target.checked;
+                // Optional: Add/remove a class for visual feedback if needed
+                item.classList.toggle('checked', event.target.checked);
+                console.log(`Task ${taskId} checked state: ${event.target.checked}`);
+            }
+        });
+    });
+    // INSIDE populateTaskList, AFTER the task list HTML is set:
+
+    // --- Add Copy Button Logic ---
+    const copyBtn = document.getElementById('copy-tasks-button');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            // 1. Filter tasks based on current checked state in window.omiWrappedTasks
+            const selectedTasks = window.omiWrappedTasks.filter(task => task.checked);
+
+            if (selectedTasks.length === 0) {
+                alert("No tasks selected to copy!"); // Simple feedback
+                return;
+            }
+
+            // 2. Format the selected tasks as a markdown list
+            const formattedList = selectedTasks.map(task => `- ${task.text}`).join('\n');
+            console.log("Formatted tasks to copy:\n", formattedList);
+
+            // 3. Use Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(formattedList)
+                    .then(() => {
+                        console.log('Tasks copied successfully!');
+                        // Optional: Give feedback on button itself
+                        copyBtn.textContent = 'Copied! ✅';
+                        setTimeout(() => { copyBtn.textContent = 'Copy Selected Tasks'; }, 2000); // Reset button text
+                        // 4. Show the confirmation modal
+                        showModal();
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy tasks: ', err);
+                        alert('Could not copy tasks. Your browser might not support this feature or permission was denied.');
+                    });
+            } else {
+                console.error('Clipboard API not supported by this browser.');
+                alert('Sorry, copying to clipboard is not supported by your browser.');
+            }
+        });
+    } else {
+        console.error("Copy button not found after populating task list.");
+    }
+}
 
 // --- Utility function to prevent HTML injection ---
 function escapeHtml(unsafe) {
@@ -227,10 +306,52 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
+// --- Modal Control Functions ---
+function showModal() {
+    const modal = document.getElementById('copy-confirmation-modal');
+    if (modal) {
+        modal.style.display = 'flex'; // Change display to flex to show it
+        // Timeout needed to allow display change before transition starts
+        setTimeout(() => {
+            modal.classList.add('visible');
+        }, 10); // Small delay
+        console.log('Showing modal');
+    } else {
+        console.error('Modal element not found!');
+    }
+}
+
+function hideModal() {
+    const modal = document.getElementById('copy-confirmation-modal');
+    if (modal) {
+        modal.classList.remove('visible');
+        // Wait for transition to finish before setting display none
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300); // Should match transition duration in CSS (0.3s)
+        console.log('Hiding modal');
+    }
+}
 
 
 // --- Run on Page Load ---
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded and parsed');
     loadReflectionData(); // Load data when the page is ready
+
+    // --- Add Modal Close Listener ---
+    const modalCloseButton = document.getElementById('modal-close-button');
+    const modalOverlay = document.getElementById('copy-confirmation-modal');
+
+    if (modalCloseButton) {
+        modalCloseButton.addEventListener('click', hideModal);
+    }
+    if (modalOverlay) {
+        // Optional: Close modal if user clicks outside the content area
+        modalOverlay.addEventListener('click', (event) => {
+            if (event.target === modalOverlay) { // Check if click was directly on the overlay
+                hideModal();
+            }
+        });
+    }
 });

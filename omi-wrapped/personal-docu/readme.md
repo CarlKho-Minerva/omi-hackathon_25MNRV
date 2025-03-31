@@ -83,5 +83,4 @@ live site: `https://storage.googleapis.com/bucket-omi-wrapped/index.html`
 
 gsutil cp script.js gs://bucket-omi-wrapped
 
-gsutil cp script.js gs://bucket-omi-wrapped/
-gsutil setmeta -h "Cache-Control:public, max-age=60, must-revalidate" gs://bucket-omi-wrapped/script.js
+gsutil rm gs://bucket-omi-wrapped/script.js

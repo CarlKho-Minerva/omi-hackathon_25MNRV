@@ -5,13 +5,17 @@
     padding: 0;
 }
 
-html, body {
+html,
+body {
     position: relative;
     height: 100%;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: #1a1a2e; /* Dark blue/purple background */
-    color: #e0e0e0; /* Light text */
-    overflow: hidden; /* Prevent body scroll */
+    background-color: #1a1a2e;
+    /* Dark blue/purple background */
+    color: #e0e0e0;
+    /* Light text */
+    overflow: hidden;
+    /* Prevent body scroll */
 }
 
 /* Loading Indicator */
@@ -19,9 +23,11 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Full viewport height */
+    height: 100vh;
+    /* Full viewport height */
     font-size: 1.5em;
-    color: #9a86ff; /* A lighter purple */
+    color: #9a86ff;
+    /* A lighter purple */
 }
 
 /* Swiper Container - ensure it takes up space */
@@ -35,46 +41,313 @@ html, body {
 .swiper-slide {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center vertically */
-    align-items: center; /* Center horizontally */
+    justify-content: center;
+    /* Center vertically */
+    align-items: center;
+    /* Center horizontally */
     text-align: center;
-    padding: 40px 20px; /* Add some padding */
-    height: 100%; /* Ensure slides try to take full height */
-    overflow-y: auto; /* Allow scrolling within slide if content overflows */
+    padding: 40px 20px;
+    /* Add some padding */
+    height: 100%;
+    /* Ensure slides try to take full height */
+    overflow-y: auto;
+    /* Allow scrolling within slide if content overflows */
 }
 
 /* Example styling for content */
- .swiper-slide h1 {
-     font-size: 2.5em;
-     margin-bottom: 20px;
-     color: #f0f0f0;
- }
+.swiper-slide h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #f0f0f0;
+}
 
- .swiper-slide p, .swiper-slide li {
-     font-size: 1.1em;
-     line-height: 1.6;
-     max-width: 80%; /* Prevent text from going too wide */
-     margin-bottom: 15px;
- }
- .swiper-slide ul {
-    list-style: none; /* Remove default bullets */
+.swiper-slide p,
+.swiper-slide li {
+    font-size: 1.1em;
+    line-height: 1.6;
+    max-width: 80%;
+    /* Prevent text from going too wide */
+    margin-bottom: 15px;
+}
+
+.swiper-slide ul {
+    list-style: none;
+    /* Remove default bullets */
     padding: 0;
     margin-top: 15px;
 }
- .swiper-slide ul li {
+
+.swiper-slide ul li {
     margin-bottom: 10px;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.05); /* Subtle background for list items */
+    background-color: rgba(255, 255, 255, 0.05);
+    /* Subtle background for list items */
     border-radius: 8px;
 }
 
 /* Swiper Pagination dots */
 .swiper-pagination-bullet {
-    background: #ffffff; /* White dots */
+    background: #ffffff;
+    /* White dots */
     opacity: 0.6;
 }
 
 .swiper-pagination-bullet-active {
     opacity: 1;
-    background: #9a86ff; /* Active dot color */
+    background: #9a86ff;
+    /* Active dot color */
+}
+
+/* --- Task List Slide Specific Styles --- */
+
+.story-slide-tasks {
+    justify-content: flex-start;
+    /* Align content to top */
+    padding-top: 60px;
+    /* More space at the top */
+    padding-bottom: 80px;
+    /* Space for button below */
+}
+
+.story-slide-tasks h1 {
+    margin-bottom: 10px;
+}
+
+.story-slide-tasks p {
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+/* Container for the scrollable list and button */
+#task-list-container {
+    width: 90%;
+    /* Adjust width as needed */
+    max-width: 500px;
+    flex-grow: 1;
+    /* Allow container to take available space */
+    overflow: hidden;
+    /* Hide anything outside */
+    position: relative;
+    /* Needed for pseudo-element gradients */
+    margin-bottom: 20px;
+    /* Space before button */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Optional border */
+    border-radius: 10px;
+}
+
+
+/* The actual scrolling list */
+.scrollable-tasks {
+    height: 100%;
+    /* Fill the container */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    padding: 15px;
+    /* Add padding to prevent text hitting the gradient */
+    padding-top: 30px;
+    padding-bottom: 30px;
+    -webkit-mask-image: linear-gradient(transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+/* Styling for individual task items */
+.task-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 5px;
+    margin-bottom: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Style labels for better clicking */
+.task-item label {
+    margin-left: 10px;
+    flex-grow: 1;
+    /* Take remaining space */
+    cursor: pointer;
+    font-size: 0.95em;
+    color: #e0e0e0;
+    transition: color 0.2s ease-in-out;
+}
+
+.task-item input[type="checkbox"] {
+    flex-shrink: 0;
+    /* Prevent checkbox from shrinking */
+    cursor: pointer;
+    /* Optional: Style checkbox appearance */
+    accent-color: #9a86ff;
+    /* Color the checkmark */
+    width: 18px;
+    height: 18px;
+}
+
+/* Style for unchecked items (optional visual feedback) */
+.task-item:not(.checked) label {
+    color: #888;
+    /* Dim the text */
+    text-decoration: line-through;
+    /* Strike through */
+}
+
+.task-item:not(.checked) {
+    background-color: rgba(80, 80, 90, 0.1);
+}
+
+
+.task-source {
+    display: block;
+    /* Put source on new line */
+    font-size: 0.75em;
+    color: #aaa;
+    font-style: italic;
+    margin-top: 3px;
+}
+
+
+/* --- Copy Button Styling --- */
+#copy-tasks-button {
+    display: block;
+    /* Ensure it's block */
+    padding: 12px 25px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #7c5cff;
+    /* Button color */
+    border: none;
+    border-radius: 25px;
+    /* Rounded pill shape */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin: 20px auto 0 auto;
+    /* Center button below list */
+}
+
+#copy-tasks-button:hover {
+    background-color: #6a4ff0;
+}
+
+#copy-tasks-button:active {
+    background-color: #5a3fe0;
+}
+
+/* --- Confirmation Modal Styles --- */
+
+.modal-overlay {
+    position: fixed;
+    /* Stay in place */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Semi-transparent background */
+    display: flex;
+    /* Use flexbox for centering */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    /* Ensure it's on top */
+    opacity: 0;
+    /* Start hidden */
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background-color: #2a2a3e;
+    /* Dark background */
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    max-width: 90%;
+    width: 400px;
+    /* Adjust max width */
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-content h2 {
+    color: #ffffff;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+}
+
+.modal-content p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+    font-size: 1em;
+}
+
+.modal-content p.modal-instructions {
+    font-size: 0.9em;
+    color: #ccc;
+    margin-top: 20px;
+}
+
+
+.modal-links {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    /* Space between buttons */
+}
+
+.modal-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.modal-button:active {
+    transform: scale(0.98);
+}
+
+.modal-button.notion-button {
+    background-color: #555;
+    /* Notion-like grey */
+    color: white;
+}
+
+.modal-button.notion-button:hover {
+    background-color: #666;
+}
+
+.modal-button.todoist-button {
+    background-color: #e44332;
+    /* Todoist red */
+    color: white;
+}
+
+.modal-button.todoist-button:hover {
+    background-color: #d13b2b;
+}
+
+.modal-button.close-button {
+    background-color: #7c5cff;
+    /* Match copy button */
+    color: white;
+    margin-top: 20px;
+    display: inline-block;
+    /* Allow margin auto if needed */
+}
+
+.modal-button.close-button:hover {
+    background-color: #6a4ff0;
 }
