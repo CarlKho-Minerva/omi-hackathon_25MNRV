@@ -1,0 +1,6 @@
+# Function dependencies, for example:
+google-cloud-firestore==2.16.0  # Use a specific version known to work
+openai==1.23.6                  # Use a specific version
+functions-framework==3.5.0      # Google's framework for Python functions
+python-dotenv==1.0.1            # For loading env vars locally
+requests==2.31.0
