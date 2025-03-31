@@ -72,3 +72,8 @@ IMPORTANT: Find the line user_id = request.args.get("uid", os.environ.get("TARGE
 edit ehre: https://console.cloud.google.com/cloudscheduler/jobs/edit/us-west2/omi-daily-reflection-job?authuser=1&invt=AbtifA&project=omi-mentor-hackathon
 
 to run manually: `gcloud scheduler jobs run omi-daily-reflection-job --project=omi-mentor-hackathon --location=us-west2`
+
+# Updated Cloud Run with GetReflection
+![alt text](image-1.png)
+
+SOO USEFUL ACTUALLY
