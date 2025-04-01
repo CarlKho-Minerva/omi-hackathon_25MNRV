@@ -219,7 +219,6 @@ body::after {
      width: 90%;
      max-width: 500px;
      flex-grow: 0; /* Don't let it grow, use fixed height */
-     overflow: hidden;
      position: relative;
      margin-bottom: 25px; /* Increased margin */
      border: 1px solid rgba(255, 255, 255, 0.08); /* Less visible border */
@@ -313,17 +312,26 @@ body::after {
 
 
 /* --- Swiper Pagination Dots --- */
-/* Position pagination relative to the viewport */
+/* Position pagination vertically centered on the right */
 .swiper-pagination {
-    bottom: 15px !important; /* Position dots lower */
+    position: absolute;
+    right: 15px; /* Distance from the right edge */
+    top: 50%;
+    transform: translateY(-50%); /* Vertically center */
+    display: flex;
+    flex-direction: column; /* Stack dots vertically */
+    align-items: center; /* Center dots horizontally if needed */
+    width: auto; /* Allow container to size based on dots */
+    height: auto;
 }
 .swiper-pagination-bullet {
     width: 8px;
     height: 8px;
     background: rgba(255, 255, 255, 0.3); /* Even dimmer dots */
     opacity: 1; /* Remove default opacity handling if customizing */
-    margin: 0 5px !important; /* Adjust spacing */
+    margin: 6px 0 !important; /* Adjust vertical spacing */
     transition: background-color 0.3s ease;
+    display: block; /* Ensure bullets are block elements */
 }
 .swiper-pagination-bullet-active {
     background: #e0e0e0; /* Active dot slightly less bright */
