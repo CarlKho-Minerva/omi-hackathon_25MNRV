@@ -242,7 +242,7 @@ async function loadReflectionData(customDate = null) {
 
     // Clear previous slides
     swiperWrapper.innerHTML = '';
-    loadingIndicator.textContent = 'Fetching your reflection...'; // Update loading text
+    loadingIndicator.textContent = 'Fetching your reflection... 🧠'; // Update loading text
     loadingIndicator.style.display = 'flex'; // Ensure loading is visible
     swiperContainer.style.display = 'none'; // Hide swiper initially
 
@@ -442,188 +442,32 @@ function populateTaskList(actionItems = [], littleThings = []) { // Add default 
         return;
     }
 
-    // --- Create horizontal task carousel structure ---
-    const carouselHtml = `
-        <div class="task-carousel">
-            <button class="task-nav-button prev">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                </svg>
-            </button>
-            <div class="task-carousel-container">
-                ${createTaskPages(combinedTasks)}
-            </div>
-            <button class="task-nav-button next">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                </svg>
-            </button>
-        </div>
-        <div class="task-pagination"></div>
-    `;
+    // Generate HTML for each task item with checkbox
+    const listHtml = combinedTasks.map(task => `
+        <div class="task-item ${task.checked ? 'checked' : ''}" data-taskid="${task.id}">
+            <input
+                type="checkbox"
+                id="${task.id}"
+                ${task.checked ? 'checked' : ''}
+            >
+            <label for="${task.id}">
+                ${escapeHtml(task.text)}
+                ${task.source === 'suggested' ? '<span class="task-source">(Suggestion based on: "' + escapeHtml(task.mention) + '")</span>' : ''}
+             </label>
+         </div>
+     `).join('');
 
-    taskListContainer.innerHTML = carouselHtml;
+    // Add a wrapper for scrolling and gradient mask
+    taskListContainer.innerHTML = `<div class="scrollable-tasks">${listHtml}</div>`;
     copyButton.style.display = 'block'; // Show copy button
-    console.log('Interactive task carousel populated.');
+    console.log('Interactive task list populated.');
 
-    // Initialize the carousel
-    initializeTaskCarousel(combinedTasks.length);
-}
-
-// Helper function to create task pages (groups of 2 items)
-function createTaskPages(tasks) {
-    // Group tasks into pairs
-    const pagesHtml = [];
-    const itemsPerPage = 2;
-    
-    for (let i = 0; i < tasks.length; i += itemsPerPage) {
-        const pageHtml = `
-            <div class="task-page" data-page="${Math.floor(i / itemsPerPage)}">
-                ${tasks.slice(i, i + itemsPerPage).map(task => `
-                    <div class="task-item ${task.checked ? 'checked' : ''}" data-taskid="${task.id}">
-                        <input
-                            type="checkbox"
-                            id="${task.id}"
-                            ${task.checked ? 'checked' : ''}
-                        >
-                        <label for="${task.id}">
-                            ${escapeHtml(task.text)}
-                            ${task.source === 'suggested' ? '<span class="task-source">(Suggestion based on: "' + escapeHtml(task.mention) + '")</span>' : ''}
-                        </label>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-        pagesHtml.push(pageHtml);
-    }
-    
-    return pagesHtml.join('');
-}
-
-// Initialize and set up carousel navigation
-function initializeTaskCarousel(totalTasks) {
-    const container = document.querySelector('.task-carousel-container');
-    const pages = document.querySelectorAll('.task-page');
-    const pagination = document.querySelector('.task-pagination');
-    const prevButton = document.querySelector('.task-nav-button.prev');
-    const nextButton = document.querySelector('.task-nav-button.next');
-    
-    if (!container || !pagination || !prevButton || !nextButton) {
-        console.error('Carousel elements not found!');
-        return;
-    }
-    
-    const pageCount = pages.length;
-    let currentPage = 0;
-    
-    // Create pagination dots
-    for (let i = 0; i < pageCount; i++) {
-        const dot = document.createElement('div');
-        dot.classList.add('page-dot');
-        if (i === 0) dot.classList.add('active');
-        dot.setAttribute('data-page', i);
-        pagination.appendChild(dot);
-        
-        // Add click event to dots
-        dot.addEventListener('click', () => {
-            goToPage(i);
-        });
-    }
-    
-    // Set initial page
-    updateCarousel();
-    
-    // Hide navigation if only one page
-    if (pageCount <= 1) {
-        prevButton.style.display = 'none';
-        nextButton.style.display = 'none';
-        pagination.style.display = 'none';
-    }
-    
-    // Add navigation button events
-    prevButton.addEventListener('click', () => {
-        if (currentPage > 0) {
-            goToPage(currentPage - 1);
-        }
-    });
-    
-    nextButton.addEventListener('click', () => {
-        if (currentPage < pageCount - 1) {
-            goToPage(currentPage + 1);
-        }
-    });
-    
-    // Add swipe/touch events for mobile
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    container.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, false);
-    
-    container.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    }, false);
-    
-    function handleSwipe() {
-        const swipeThreshold = 50; // Minimum swipe distance
-        
-        // Left swipe (next)
-        if (touchEndX < touchStartX - swipeThreshold) {
-            if (currentPage < pageCount - 1) {
-                goToPage(currentPage + 1);
-            }
-        }
-        
-        // Right swipe (prev)
-        if (touchEndX > touchStartX + swipeThreshold) {
-            if (currentPage > 0) {
-                goToPage(currentPage - 1);
-            }
-        }
-    }
-    
-    function goToPage(page) {
-        if (page >= 0 && page < pageCount) {
-            currentPage = page;
-            updateCarousel();
-        }
-    }
-    
-    function updateCarousel() {
-        // Update container transform
-        container.style.transform = `translateX(-${currentPage * 100}%)`;
-        
-        // Update active page
-        pages.forEach((page, index) => {
-            if (index === currentPage) {
-                page.classList.add('active');
-            } else {
-                page.classList.remove('active');
-            }
-        });
-        
-        // Update pagination dots
-        document.querySelectorAll('.page-dot').forEach((dot, index) => {
-            if (index === currentPage) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
-        
-        // Update button states
-        prevButton.style.opacity = currentPage === 0 ? '0.5' : '1';
-        nextButton.style.opacity = currentPage === pageCount - 1 ? '0.5' : '1';
-    }
-    
-    // Add checkbox change listeners for all tasks
-    const taskItems = document.querySelectorAll('.task-item');
+    // --- Add Event Listeners for Checkboxes ---
+    const taskItems = taskListContainer.querySelectorAll('.task-item');
     taskItems.forEach(item => {
         const checkbox = item.querySelector('input[type="checkbox"]');
         const taskId = item.dataset.taskid;
-        
+
         checkbox.addEventListener('change', (event) => {
             // Find the corresponding task in our global state and update its checked status
             const taskIndex = window.omiWrappedTasks.findIndex(t => t.id === taskId);
@@ -635,13 +479,9 @@ function initializeTaskCarousel(totalTasks) {
             }
         });
     });
-    
-    // Setup copy button (reusing existing code)
-    setupCopyButton();
-}
+    // INSIDE populateTaskList, AFTER the task list HTML is set:
 
-// Setup the copy button functionality
-function setupCopyButton() {
+    // --- Add Copy Button Logic ---
     const copyBtn = document.getElementById('copy-tasks-button');
     if (copyBtn) {
         copyBtn.addEventListener('click', () => {
@@ -663,7 +503,7 @@ function setupCopyButton() {
                     .then(() => {
                         console.log('Tasks copied successfully!');
                         // Optional: Give feedback on button itself
-                        copyBtn.textContent = 'Copied!';
+                        copyBtn.textContent = 'Copied! ✅';
                         setTimeout(() => { copyBtn.textContent = 'Copy Selected Tasks'; }, 2000); // Reset button text
                         // 4. Show the confirmation modal
                         showModal();
