@@ -507,6 +507,7 @@ body::after {
     /* border: 1px solid rgba(255, 255, 255, 0.08); */
     border-radius: 10px;
     overflow-y: auto;
+    touch-action: pan-y; /* Prevent slide drag when scrolling list on touch */
 
     /* Apply scrollbar styles directly
     scrollbar-width: thin;
@@ -714,7 +715,7 @@ body::after {
 }
 
 .modal-content {
-    background-color: #1f1f2e;
+    background-color: #161616;
     /* Darker modal background */
     padding: 30px 40px;
     border-radius: 15px;
@@ -791,9 +792,9 @@ body::after {
 }
 
 .modal-button.close-button {
-    background-color: #6c4cff;
+    background-color: #ffffff;
     /* Match copy button */
-    color: white;
+    color: rgb(33, 33, 33);
     margin-top: 20px;
     display: inline-block;
     /* Allow margin auto if needed */
