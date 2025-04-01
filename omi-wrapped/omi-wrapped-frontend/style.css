@@ -7,6 +7,67 @@
     padding: 0;
 }
 
+/* Header and Branding */
+.header-brand {
+    position: fixed;
+    top: 15px;
+    left: 20px;
+    z-index: 100;
+    color: white;
+    font-weight: 700;
+    font-size: 1.3em;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Calendar Button */
+.calendar-button {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    z-index: 100;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: background-color 0.2s ease;
+}
+
+.calendar-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.calendar-button svg {
+    width: 22px;
+    height: 22px;
+    fill: white;
+}
+
+/* Footer */
+.footer {
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.5);
+    z-index: 100;
+}
+
+.footer a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
 html,
 body {
     position: relative;
@@ -570,4 +631,33 @@ body::after {
 
 .modal-button.close-button:hover {
     background-color: #5a3ff0;
+}
+
+/* --- Task List Non-Scrollable & Back Button --- */
+.story-slide-tasks {
+    overflow-y: hidden !important;
+}
+
+.back-button {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background-color: #6c4cff;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    z-index: 50;
+}
+
+.back-button:hover {
+    background-color: #5a3ff0;
+}
+
+.back-button:active {
+    background-color: #4a2fe0;
 }

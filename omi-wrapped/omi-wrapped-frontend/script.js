@@ -6,9 +6,12 @@ console.log("Omi Wrapped Frontend Script Loaded!");
 const API_ENDPOINT = 'https://omi-to-notion-363551469917.us-west2.run.app/get_reflection'; // <<< REPLACE THIS LATER
 const USER_ID = 'ckVQW3MVAoenlOdYhHLt5K3zPpW2'; // <<< REPLACE with your user ID for testing
 
+// Global swiper instance
+let swiperInstance;
+
 // Function to initialize Swiper
 function initializeSwiper() {
-    const swiper = new Swiper('.swiper-container', {
+    swiperInstance = new Swiper('.swiper-container', {
         // Optional parameters
         direction: 'vertical', // Make it swipe vertically like stories
         loop: false, // Don't loop back to the beginning
@@ -19,12 +22,6 @@ function initializeSwiper() {
             clickable: true,
         },
 
-        // Navigation arrows (optional)
-        // navigation: {
-        //   nextEl: '.swiper-button-next',
-        //   prevEl: '.swiper-button-prev',
-        // },
-
         // Keyboard control (optional)
         keyboard: {
             enabled: true,
@@ -34,11 +31,41 @@ function initializeSwiper() {
         mousewheel: true,
     });
     console.log('Swiper initialized');
-    return swiper; // Return the instance if needed
+    return swiperInstance; // Return the instance if needed
+}
+
+// Calendar button handler function
+function setupCalendarButton() {
+    const calendarButton = document.getElementById('calendar-button');
+    if (calendarButton) {
+        calendarButton.addEventListener('click', function() {
+            // Show a date picker or custom date selection UI
+            const today = new Date();
+            const dateStr = prompt('Enter date (YYYY-MM-DD):', 
+                `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`);
+            
+            if (dateStr && isValidDateFormat(dateStr)) {
+                loadReflectionData(dateStr);
+            } else if (dateStr) {
+                alert('Please use the format YYYY-MM-DD');
+            }
+        });
+    }
+}
+
+// Validate date format
+function isValidDateFormat(dateStr) {
+    // Basic validation for YYYY-MM-DD format
+    return /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
+}
+
+// Enhanced version of loadReflectionData that accepts a date parameter
+async function loadReflectionData(customDate = null) {
+    // ... existing code ...
 }
 
 // REPLACE the existing loadReflectionData function with this one:
-async function loadReflectionData() {
+async function loadReflectionData(customDate = null) {
     const loadingIndicator = document.getElementById('loading-indicator');
     const swiperContainer = document.getElementById('reflection-swiper');
     const swiperWrapper = document.getElementById('swiper-wrapper-main');
@@ -50,14 +77,20 @@ async function loadReflectionData() {
     swiperContainer.style.display = 'none'; // Hide swiper initially
 
     // --- Determine Date and User ---
-    // For now, using hardcoded USER_ID and today's date
-    // TODO: In future, might get USER_ID from Omi context if possible, or implement login
+    // Use customDate if provided, otherwise use today's date
     const today = new Date();
-    // Construct YYYY-MM-DD from local date components to avoid timezone issues with toISOString()
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-    const day = String(today.getDate()).padStart(2, '0');
-    const dateStr = `${year}-${month}-${day}`;
+    let dateStr;
+    
+    if (customDate) {
+        dateStr = customDate;
+    } else {
+        // Construct YYYY-MM-DD from local date components to avoid timezone issues with toISOString()
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const day = String(today.getDate()).padStart(2, '0');
+        dateStr = `${year}-${month}-${day}`;
+    }
+    
     const userId = USER_ID; // Using the constant defined above
 
     // --- Construct API URL ---
@@ -152,7 +185,8 @@ async function loadReflectionData() {
                     <!-- Task list items will be loaded here -->
                     <p>Loading tasks...</p>
                 </div>
-                 <button id="copy-tasks-button" style="margin-top: 20px; padding: 10px 20px; display: none;">Copy Selected Tasks</button> <!-- Initially hidden -->
+                <button id="copy-tasks-button" style="margin-top: 20px; padding: 10px 20px; display: none;">Copy Selected Tasks</button> <!-- Initially hidden -->
+                <button id="back-button" class="back-button">Return to Previous Slide</button>
              </div>`;
 
         // Inject the generated HTML into the swiper wrapper
@@ -162,6 +196,9 @@ async function loadReflectionData() {
         // --- Populate Task List Separately (for OMIW-9) ---
         // We'll call a function here later to build the interactive list
         populateTaskList(data.action_items || [], data.little_things || []); // Pass both lists
+
+        // Add event listener for back button
+        setupBackButton();
 
         // Hide loading, show swiper
         loadingIndicator.style.display = 'none';
@@ -177,7 +214,19 @@ async function loadReflectionData() {
         // Optionally display error details for debugging
         // loadingIndicator.innerHTML += `<br><small>${error.stack}</small>`;
     }
+}
 
+// Setup back button functionality
+function setupBackButton() {
+    const backButton = document.getElementById('back-button');
+    if (backButton) {
+        backButton.addEventListener('click', function() {
+            if (swiperInstance) {
+                // Go to the previous slide (advice slide)
+                swiperInstance.slideTo(4); // Index 4 is the advice slide (5th slide)
+            }
+        });
+    }
 }
 
 // REPLACE the existing populateTaskList function with this one:
@@ -342,6 +391,9 @@ function hideModal() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded and parsed');
     loadReflectionData(); // Load data when the page is ready
+    
+    // Setup the calendar button functionality
+    setupCalendarButton();
 
     // --- Add Modal Close Listener ---
     const modalCloseButton = document.getElementById('modal-close-button');
