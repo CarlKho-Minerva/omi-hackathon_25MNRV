@@ -74,29 +74,46 @@ def process_transcript_with_openai(transcript: str) -> dict:
 
     logging.info(f"Processing transcript ({len(transcript)} chars) with OpenAI...")
     prompt = f"""
-    Analyze the following conversation transcript(s) from an entire day and provide the following details in JSON format:
-    1.  "daily_emoji": Suggest a single standard emoji that best represents the overall day's mood or primary theme.
-    2.  "summary": A brief summary (2-4 sentences) capturing the essence or main activities of the day based on the conversations.
-    3.  "gratitude_points": A JSON array of 2-3 specific strings highlighting positive moments, interactions, or accomplishments mentioned that the user could be grateful for.
-    4.  "learned_terms": A JSON array of objects. Identify unique jargon, technical terms, names, or concepts mentioned. For each, provide a brief definition/context suitable for a quick reminder. Format: [{{"term": "...", "definition": "..."}}]. Limit to 3-5 key terms.
-    5.  "little_things": A JSON array of objects. Identify small, potentially actionable observations or mentions about preferences, desires, or needs of the user or others mentioned (e.g., someone liking donuts, needing milk). Format: [{{"mention": "...", "suggested_action": "..."}}]. Limit to 2-4 items. Generate a concise 'suggested_action' for each.
-    6.  "mentor_advice": Provide a single, constructive, and concise piece of advice (1-2 sentences) based on the day's conversations, focusing on communication, productivity, goals, or well-being. Be supportive but direct.
-    7.  "action_items": A JSON array of strings, listing clear, concrete action items or tasks explicitly mentioned for the user or assigned to them. Do not include the 'suggested_action' from 'little_things' here.
+        Analyze the following conversation transcript(s) from an entire day captured by the Omi Device V2. Your goal is to provide insights that are personalized, supportive, and encourage reflection and gratitude. Focus on extracting meaning and actionable observations *directly* from the user's interactions.
 
-    Transcript(s):
-    "{transcript}"
+        Provide the following details in JSON format:
 
-    Return ONLY the valid JSON object. Ensure all keys are present, even if arrays are empty ([]).
-    Example JSON format:
-    {{
-      "daily_emoji": "🚀",
-      "summary": "Productive day focused on project X planning and a helpful chat with Sarah.",
-      "gratitude_points": ["Completed the difficult report.", "Received positive feedback from the team."],
-      "learned_terms": [{{"term": "OKR", "definition": "Objectives and Key Results - goal-setting framework."}}],
-      "little_things": [{{"mention": "User mentioned needing coffee.", "suggested_action": "Add coffee to shopping list."}}],
-      "mentor_advice": "Consider delegating the documentation task to free up time for strategic planning.",
-      "action_items": ["Email Alex the final document by EOD.", "Schedule follow-up meeting."]
-    }}
+        1.  "daily_emoji": Suggest a single standard emoji that best represents the overall mood or primary theme of the user's day *as reflected in their conversations*.
+        2.  "summary": A brief summary (2-4 sentences) capturing the essence of the user's day, highlighting key interactions, activities, or expressed feelings mentioned in the transcript. Make it feel personal *to the user*.
+        3.  "gratitude_points": A JSON array of 2-3 specific strings highlighting positive moments, instances of connection, kindness received/given, or accomplishments *explicitly mentioned or clearly inferable from the conversations*. Phrase these as prompts for gratitude, referencing the specific context where possible (e.g., "Remember the supportive comment you received during the project discussion," "Appreciate the shared laugh about [topic]").
+        4.  "learned_terms": A JSON array of objects. Identify unique jargon, technical terms, names, or concepts mentioned that the user might want a quick reminder of. For each, provide a brief definition/context *based on how it was used in the conversation*. Format: [{{"term": "...", "definition": "..."}}]. Limit to 3-5 key terms.
+        5.  "little_things": A JSON array of objects. Identify small, potentially actionable observations based on preferences, desires, needs, or passing comments *mentioned by the user or others in the conversations*. Link the `mention` directly to a specific conversational context. The `suggested_action` should be a thoughtful, personalized suggestion for a small act of kindness, self-care, or remembrance inspired *by that specific moment*. **Since speaker diarization is unavailable, refer to others generally (e.g., "the person you spoke with about X," "someone mentioned...")**. Format: [{{"mention": "...", "suggested_action": "..."}}]. Limit to 2-4 items.
+        6.  "mentor_advice": Provide a single, constructive, concise, and *empathetic* piece of advice (1-2 sentences) rooted in specific patterns, challenges, or opportunities observed *in the user's interactions* throughout the day. Focus on communication, well-being, goals, or relationships. Frame it supportively.
+        7.  "action_items": A JSON array of strings, listing clear, concrete action items or tasks that were *explicitly stated* in the conversations as needing to be done *by the user*, or assigned to them. Do not include suggestions from 'little_things' here. Ensure these are direct obligations mentioned.
+
+        Transcript(s):
+        "{transcript}"
+
+        Return ONLY the valid JSON object. Ensure all keys are present, even if arrays are empty ([]).
+
+        Example JSON format reflecting the enhanced requirements:
+        {{
+        "daily_emoji": "🤝",
+        "summary": "Sounds like a day with collaborative moments, particularly around the project planning. You also shared a nice chat about food preferences later on.",
+        "gratitude_points": [
+            "Appreciate the moment someone agreed with your approach during the team sync.",
+            "Be grateful for the shared enjoyment discussing different cuisines.",
+            "Acknowledge your effort in articulating the project requirements clearly."
+        ],
+        "learned_terms": [
+            {{"term": "Kanban Board", "definition": "Mentioned during the project sync; it's a visual tool for managing workflow."}},
+            {{"term": "SOP", "definition": "Standard Operating Procedure; discussed in relation to process documentation."}}
+        ],
+        "little_things": [
+            {{"mention": "In your conversation about spicy food, the person you were talking with mentioned loving egg tarts.", "suggested_action": "Consider picking up some egg tarts for them if you're near a bakery soon, as a thoughtful gesture."}},
+            {{"mention": "You briefly mentioned needing to organize your desktop files during the morning chat.", "suggested_action": "Maybe take 10 minutes tomorrow to quickly tidy up those digital files?"}}
+        ],
+        "mentor_advice": "It's great you're connecting with colleagues! Remember to also schedule short breaks during busy days to maintain your energy and focus.",
+        "action_items": [
+            "Send the meeting minutes to the project team.",
+            "Draft the initial SOP document by Friday."
+        ]
+        }}
     """
     try:
         response = openai_client.chat.completions.create(

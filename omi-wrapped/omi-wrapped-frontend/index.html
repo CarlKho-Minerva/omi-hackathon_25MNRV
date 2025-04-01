@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> <!-- Mobile focus -->
+    <title>Omi Wrapped - Daily Reflection</title>
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Link Your Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌀</text></svg>">
+    <!-- Simple Favicon -->
+</head>
+
+<body>
+    <!-- Header branding -->
+    <div class="header-brand">Omi Wrapped</div>
+    
+    <!-- Calendar Button -->
+    <div class="calendar-button" id="calendar-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5zm2 4h10v2H7v-2zm0 4h7v2H7v-2z"/>
+        </svg>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Made with love by <a href="https://github.com/CarlKho-Minerva/" target="_blank">Carl Kho</a>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loading-indicator">Loading your reflection... ✨</div>
+
+    <!-- Swiper Container -->
+    <div class="swiper-container" id="reflection-swiper" style="display: none;"> <!-- Hide until loaded -->
+        <div class="swiper-wrapper" id="swiper-wrapper-main">
+            <!-- Slides will be injected here by JavaScript -->
+            <!-- Example Structure (for reference):
+            <div class="swiper-slide" id="slide-intro">
+                <h1>Slide 1 Title</h1>
+                <p>Content...</p>
+            </div>
+            <div class="swiper-slide" id="slide-gratitude">
+                <h1>Gratitude</h1>
+                 <ul><li>Point 1</li></ul>
+            </div>
+             -->
+        </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+
+        <!-- Add Navigation (Optional) -->
+        <!-- <div class="swiper-button-prev"></div> -->
+        <!-- <div class="swiper-button-next"></div> -->
+    </div>
+
+    <!-- Confirmation Modal (Initially Hidden) -->
+    <div id="copy-confirmation-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2>Tasks Copied!</h2>
+            <p>Your selected tasks are copied to the clipboard in markdown list format.</p>
+            <p>You can now paste them into:</p>
+            <div class="modal-links">
+                <a href="https://www.notion.so" target="_blank" rel="noopener noreferrer"
+                    class="modal-button notion-button">Open Notion</a>
+                <a href="https://todoist.com/app" target="_blank" rel="noopener noreferrer"
+                    class="modal-button todoist-button">Open Todoist</a>
+            </div>
+            <p class="modal-instructions">Just paste directly into a Notion page or as a new task in Todoist.</p>
+            <button id="modal-close-button" class="modal-button close-button">Got it!</button>
+        </div>
+    </div>
+
+    <!-- Calendar Date Picker Overlay (Initially Hidden) -->
+    <div id="calendar-overlay" class="calendar-overlay">
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <div class="calendar-title" id="calendar-month-year">March 2025</div>
+                <div class="calendar-nav">
+                    <button class="calendar-nav-btn" id="prev-month">&lt;</button>
+                    <button class="calendar-nav-btn" id="next-month">&gt;</button>
+                </div>
+            </div>
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- Weekday headers will be added by JS -->
+                <!-- Calendar days will be added by JS -->
+            </div>
+            <div class="calendar-footer">
+                <button class="calendar-btn cancel" id="calendar-cancel">Cancel</button>
+                <button class="calendar-btn select" id="calendar-select">Select</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Your Custom JS -->
+    <script src="script.js"></script>
+</body>
+
+</html>
