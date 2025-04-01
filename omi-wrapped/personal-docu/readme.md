@@ -81,6 +81,8 @@ SOO USEFUL ACTUALLY
 # Frontend stuff on gs://bucket-omi-wrapped
 live site: `https://storage.googleapis.com/bucket-omi-wrapped/index.html`
 
+gsutil cp index.html gs://bucket-omi-wrapped
+gsutil cp style.css gs://bucket-omi-wrapped
 gsutil cp script.js gs://bucket-omi-wrapped
 
 gsutil rm gs://bucket-omi-wrapped/script.js
