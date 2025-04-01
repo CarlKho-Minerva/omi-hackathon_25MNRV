@@ -7,18 +7,31 @@
     padding: 0;
 }
 
-html, body {
+html,
+body {
     position: relative;
-    height: 100%; /* Crucial for Swiper height */
+    height: 100%;
+    /* Crucial for Swiper height */
     width: 100%;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Using Inter font - include via Google Fonts if needed */
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    /* Using Inter font - include via Google Fonts if needed */
     /* Darker, sleepier gradient */
-    background: linear-gradient(180deg, #12121f 0%, #2a133a 50%, #12121f 100%);
-    color: #e0e0e0; /* Slightly softer default text */
-    overflow: hidden; /* Prevent body scroll, Swiper handles slide scroll */
-    -webkit-font-smoothing: antialiased; /* Smoother text */
+    background: #000000;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #2c2c2c, #000000);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #202020, #000000);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    color: #e0e0e0;
+    /* Slightly softer default text */
+    overflow: hidden;
+    /* Prevent body scroll, Swiper handles slide scroll */
+    -webkit-font-smoothing: antialiased;
+    /* Smoother text */
     -moz-osx-font-smoothing: grayscale;
-    filter: brightness(0.9); /* Dim the overall look slightly */
+    filter: brightness(0.9);
+    /* Dim the overall look slightly */
 }
 
 /* Add grain overlay */
@@ -29,27 +42,35 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)"/></svg>');
-    opacity: 0.04; /* Adjust opacity for desired grain intensity */
-    pointer-events: none; /* Make sure it doesn't interfere with clicks */
-    z-index: -1; /* Place it behind content */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    opacity: 0.05;
+    /* Increased opacity for more visible grain */
+    pointer-events: none;
+    /* Make sure it doesn't interfere with clicks */
+    z-index: -1;
+    /* Place it behind content */
 }
 
 
 /* --- Loading Indicator --- */
 #loading-indicator {
     display: flex;
-    flex-direction: column; /* Stack text and spinner */
+    flex-direction: column;
+    /* Stack text and spinner */
     justify-content: center;
     align-items: center;
     height: 100vh;
-    font-size: 1.2em; /* Slightly smaller */
-    color: #c5b8ff; /* Lighter purple */
+    font-size: 1.2em;
+    /* Slightly smaller */
+    color: #c5b8ff;
+    /* Lighter purple */
     text-align: center;
     padding: 20px;
 }
- /* Optional: Add a simple spinner animation */
- #loading-indicator::before {
+
+/* Optional: Add a simple spinner animation */
+#loading-indicator::before {
     content: '';
     display: block;
     width: 40px;
@@ -59,15 +80,21 @@ body::after {
     border-top-color: #c5b8ff;
     border-radius: 50%;
     animation: spin 1s linear infinite;
- }
- @keyframes spin { to { transform: rotate(360deg); } }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 
 /* --- Swiper Container & Wrapper --- */
 .swiper-container {
     width: 100%;
     height: 100%;
-    position: absolute; /* Ensure it covers body */
+    position: absolute;
+    /* Ensure it covers body */
     top: 0;
     left: 0;
 }
@@ -80,56 +107,79 @@ body::after {
 .swiper-slide {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Vertically center content by default */
+    justify-content: center;
+    /* Vertically center content by default */
     align-items: center;
     text-align: center;
     height: 100%;
-    padding: 60px 40px; /* Increased padding for breathability */
-    overflow-y: auto; /* Allow vertical scroll *within* a slide if needed */
-    background: transparent; /* Use body gradient */
-    position: relative; /* For potential absolute elements later */
+    padding: 60px 40px;
+    /* Increased padding for breathability */
+    overflow-y: auto;
+    /* Allow vertical scroll *within* a slide if needed */
+    background: transparent;
+    /* Use body gradient */
+    position: relative;
+    /* For potential absolute elements later */
 }
- /* Add some subtle transition effect between slides */
- /* .swiper-slide { transition: opacity 0.3s ease-in-out; } */ /* Handled by Swiper usually */
+
+/* Add some subtle transition effect between slides */
+/* .swiper-slide { transition: opacity 0.3s ease-in-out; } */
+/* Handled by Swiper usually */
 
 
 /* --- Slide-Specific Content Styling --- */
 
 /* Common Elements */
- .swiper-slide h1 {
-    font-size: 2.6em; /* Slightly smaller for balance */
-    font-weight: 900; /* Boldest weight */
-    margin-bottom: 25px; /* Increased margin */
+.swiper-slide h1 {
+    font-size: 2.6em;
+    /* Slightly smaller for balance */
+    font-weight: 900;
+    /* Boldest weight */
+    margin-bottom: 25px;
+    /* Increased margin */
     color: #ffffff;
     line-height: 1.25;
- }
- .swiper-slide p {
-    font-size: 1.05em; /* Slightly smaller */
-    line-height: 1.7; /* Increased line height */
-    max-width: 80%; /* Slightly narrower */
-    margin-bottom: 25px; /* Increased margin */
-    color: #c8c8c8; /* Slightly dimmer than before */
- }
- .swiper-slide .slide-hint, .swiper-slide .slide-note {
-     position: absolute;
-     bottom: 30px; /* Position hints at the bottom */
-     left: 50%;
-     transform: translateX(-50%);
-     font-size: 0.8em;
-     color: rgba(255, 255, 255, 0.5);
-     font-style: italic;
- }
- .swiper-slide .slide-note {
-     bottom: 60px; /* Adjust if hint is also present */
-     padding: 0 20px;
- }
+}
+
+.swiper-slide p {
+    font-size: 1.05em;
+    /* Slightly smaller */
+    line-height: 1.7;
+    /* Increased line height */
+    max-width: 80%;
+    /* Slightly narrower */
+    margin-bottom: 25px;
+    /* Increased margin */
+    color: #c8c8c8;
+    /* Slightly dimmer than before */
+}
+
+.swiper-slide .slide-hint,
+.swiper-slide .slide-note {
+    position: absolute;
+    bottom: 30px;
+    /* Position hints at the bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+}
+
+.swiper-slide .slide-note {
+    bottom: 60px;
+    /* Adjust if hint is also present */
+    padding: 0 20px;
+}
 
 /* Slide 1: Intro */
 .story-slide-intro .slide-emoji {
-    font-size: 4em; /* Large emoji */
+    font-size: 4em;
+    /* Large emoji */
     margin-bottom: 20px;
     display: block;
 }
+
 .story-slide-intro .summary {
     font-size: 1.2em;
     font-weight: 400;
@@ -140,127 +190,175 @@ body::after {
 .points-list {
     list-style: none;
     padding: 0;
-    margin-top: 25px; /* Increased margin */
+    margin-top: 25px;
+    /* Increased margin */
     width: 90%;
     max-width: 500px;
 }
+
 .points-list li {
-    background-color: rgba(255, 255, 255, 0.06); /* Slightly less visible */
-    border-radius: 14px; /* Slightly more rounded */
-    padding: 20px 25px; /* Increased padding */
-    margin-bottom: 15px; /* Increased margin */
-    font-size: 0.95em; /* Slightly smaller */
-    line-height: 1.6; /* Increased line height */
+    background-color: rgba(255, 255, 255, 0.06);
+    /* Slightly less visible */
+    border-radius: 14px;
+    /* Slightly more rounded */
+    padding: 20px 25px;
+    /* Increased padding */
+    margin-bottom: 15px;
+    /* Increased margin */
+    font-size: 0.95em;
+    /* Slightly smaller */
+    line-height: 1.6;
+    /* Increased line height */
     color: #d8d8d8;
-    text-align: left; /* Align list items left */
+    text-align: left;
+    /* Align list items left */
 }
- .story-slide-littlethings .points-list small {
-     display: block;
-     margin-top: 5px;
-     color: #b0b0b0;
-     font-size: 0.85em;
- }
+
+.story-slide-littlethings .points-list small {
+    display: block;
+    margin-top: 5px;
+    color: #b0b0b0;
+    font-size: 0.85em;
+}
 
 /* Slide 3: Knowledge List */
 .terms-list {
     list-style: none;
     padding: 0;
-    margin-top: 25px; /* Increased margin */
+    margin-top: 25px;
+    /* Increased margin */
     width: 90%;
     max-width: 500px;
 }
+
 .terms-list li {
-    background-color: rgba(255, 255, 255, 0.06); /* Slightly less visible */
-    border-radius: 14px; /* Slightly more rounded */
-    padding: 20px 25px; /* Increased padding */
-    margin-bottom: 15px; /* Increased margin */
-    font-size: 0.9em; /* Slightly smaller */
-    line-height: 1.6; /* Increased line height */
+    background-color: rgba(255, 255, 255, 0.06);
+    /* Slightly less visible */
+    border-radius: 14px;
+    /* Slightly more rounded */
+    padding: 20px 25px;
+    /* Increased padding */
+    margin-bottom: 15px;
+    /* Increased margin */
+    font-size: 0.9em;
+    /* Slightly smaller */
+    line-height: 1.6;
+    /* Increased line height */
     color: #d8d8d8;
     text-align: left;
 }
- .terms-list li strong {
+
+.terms-list li strong {
     color: #ffffff;
     font-weight: 700;
-    display: block; /* Term on its own line */
+    display: block;
+    /* Term on its own line */
     margin-bottom: 3px;
- }
+}
 
 
 /* Slide 5: Mentor Advice */
- .story-slide-advice {
-     /* background: linear-gradient(180deg, #4a1c5a 0%, #3a1c4a 100%); /* Optional different bg */
- }
+.story-slide-advice {
+    /* background: linear-gradient(180deg, #4a1c5a 0%, #3a1c4a 100%); /* Optional different bg */
+}
+
 .advice-quote {
-    font-size: 1.3em; /* Slightly smaller */
+    font-size: 1.3em;
+    /* Slightly smaller */
     font-style: italic;
     font-weight: 400;
     color: #f0f0f0;
-    padding: 25px; /* Increased padding */
-    border-left: 5px solid #8a76ef; /* Slightly softer accent */
-    background-color: rgba(255, 255, 255, 0.04); /* Less visible */
+    padding: 25px;
+    /* Increased padding */
+    border-left: 5px solid #8a76ef;
+    /* Slightly softer accent */
+    background-color: rgba(255, 255, 255, 0.04);
+    /* Less visible */
     border-radius: 0 8px 8px 0;
     max-width: 90%;
     text-align: left;
-    margin-top: 25px; /* Increased margin */
+    margin-top: 25px;
+    /* Increased margin */
 }
 
 /* Slide 6: Tasks - Apply styles from OMIW-9 */
 /* Make sure the task list styles from previous step are present */
 /* Adjust task list container height if needed */
- .story-slide-tasks {
-    justify-content: flex-start; /* Align content to top */
+.story-slide-tasks {
+    justify-content: flex-start;
+    /* Align content to top */
     padding-top: 60px;
-    padding-bottom: 100px; /* More space for button */
+    padding-bottom: 100px;
+    /* More space for button */
 }
+
 #task-list-container {
-    height: 50vh; /* Example: Use viewport height units for relative sizing */
+    height: 50vh;
+    /* Example: Use viewport height units for relative sizing */
     /* Ensure other styles from OMIW-9 are here */
-     width: 90%;
-     max-width: 500px;
-     flex-grow: 0; /* Don't let it grow, use fixed height */
-     position: relative;
-     margin-bottom: 25px; /* Increased margin */
-     border: 1px solid rgba(255, 255, 255, 0.08); /* Less visible border */
-     border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    flex-grow: 0;
+    /* Don't let it grow, use fixed height */
+    position: relative;
+    margin-bottom: 25px;
+    /* Increased margin */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    /* Less visible border */
+    border-radius: 10px;
 }
- .scrollable-tasks {
-     height: 100%;
-     overflow-y: auto;
-     padding: 20px; /* Increased padding */
-     padding-top: 35px; /* Padding for top gradient */
-     padding-bottom: 35px; /* Padding for bottom gradient */
-     -webkit-mask-image: linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%);
-            mask-image: linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%); /* Adjust % for fade size */
- }
+
+.scrollable-tasks {
+    height: 100%;
+    overflow-y: auto;
+    padding: 20px;
+    /* Increased padding */
+    padding-top: 35px;
+    /* Padding for top gradient */
+    padding-bottom: 35px;
+    /* Padding for bottom gradient */
+    -webkit-mask-image: linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%);
+    mask-image: linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%);
+    /* Adjust % for fade size */
+}
+
 /* Ensure .task-item, label, input, .task-source styles from OMIW-9 are present */
 /* Styling for individual task items */
 .task-item {
     display: flex;
     align-items: center;
-    padding: 12px 10px; /* Increased padding */
-    margin-bottom: 10px; /* Increased margin */
-    background-color: rgba(255, 255, 255, 0.04); /* Less visible */
-    border-radius: 8px; /* Softer radius */
+    padding: 12px 10px;
+    /* Increased padding */
+    margin-bottom: 10px;
+    /* Increased margin */
+    background-color: rgba(255, 255, 255, 0.04);
+    /* Less visible */
+    border-radius: 8px;
+    /* Softer radius */
     transition: background-color 0.2s ease-in-out;
 }
 
 /* Style labels for better clicking */
 .task-item label {
     margin-left: 10px;
-    flex-grow: 1; /* Take remaining space */
+    flex-grow: 1;
+    /* Take remaining space */
     cursor: pointer;
-    font-size: 0.9em; /* Slightly smaller */
+    font-size: 0.9em;
+    /* Slightly smaller */
     color: #d8d8d8;
-    line-height: 1.5; /* Added line height */
+    line-height: 1.5;
+    /* Added line height */
     transition: color 0.2s ease-in-out;
 }
 
 .task-item input[type="checkbox"] {
-    flex-shrink: 0; /* Prevent checkbox from shrinking */
+    flex-shrink: 0;
+    /* Prevent checkbox from shrinking */
     cursor: pointer;
     /* Optional: Style checkbox appearance */
-    accent-color: #9a86ff; /* Color the checkmark */
+    accent-color: #9a86ff;
+    /* Color the checkmark */
     width: 18px;
     height: 18px;
 }
@@ -279,9 +377,12 @@ body::after {
 
 
 .task-source {
-    display: block; /* Put source on new line */
-    font-size: 0.7em; /* Slightly smaller */
-    color: #999; /* Dimmer */
+    display: block;
+    /* Put source on new line */
+    font-size: 0.7em;
+    /* Slightly smaller */
+    color: #999;
+    /* Dimmer */
     font-style: italic;
     margin-top: 3px;
 }
@@ -289,17 +390,21 @@ body::after {
 
 /* --- Copy Button Styling --- */
 #copy-tasks-button {
-    display: block; /* Ensure it's block */
+    display: block;
+    /* Ensure it's block */
     padding: 12px 25px;
     font-size: 1em;
     font-weight: bold;
     color: #ffffff;
-    background-color: #6c4cff; /* Slightly adjusted color */
+    background-color: #6c4cff;
+    /* Slightly adjusted color */
     border: none;
-    border-radius: 25px; /* Rounded pill shape */
+    border-radius: 25px;
+    /* Rounded pill shape */
     cursor: pointer;
     transition: background-color 0.2s ease;
-    margin: 25px auto 0 auto; /* Increased top margin */
+    margin: 25px auto 0 auto;
+    /* Increased top margin */
 }
 
 #copy-tasks-button:hover {
@@ -315,42 +420,59 @@ body::after {
 /* Position pagination vertically centered on the right */
 .swiper-pagination {
     position: absolute;
-    right: 15px; /* Distance from the right edge */
+    right: 15px;
+    /* Distance from the right edge */
     top: 50%;
-    transform: translateY(-50%); /* Vertically center */
+    transform: translateY(-50%);
+    /* Vertically center */
     display: flex;
-    flex-direction: column; /* Stack dots vertically */
-    align-items: center; /* Center dots horizontally if needed */
-    width: auto; /* Allow container to size based on dots */
+    flex-direction: column;
+    /* Stack dots vertically */
+    align-items: center;
+    /* Center dots horizontally if needed */
+    width: auto;
+    /* Allow container to size based on dots */
     height: auto;
 }
+
 .swiper-pagination-bullet {
     width: 8px;
     height: 8px;
-    background: rgba(255, 255, 255, 0.3); /* Even dimmer dots */
-    opacity: 1; /* Remove default opacity handling if customizing */
-    margin: 6px 0 !important; /* Adjust vertical spacing */
+    background: rgba(255, 255, 255, 0.3);
+    /* Even dimmer dots */
+    opacity: 1;
+    /* Remove default opacity handling if customizing */
+    margin: 6px 0 !important;
+    /* Adjust vertical spacing */
     transition: background-color 0.3s ease;
-    display: block; /* Ensure bullets are block elements */
+    display: block;
+    /* Ensure bullets are block elements */
 }
+
 .swiper-pagination-bullet-active {
-    background: #e0e0e0; /* Active dot slightly less bright */
+    background: #e0e0e0;
+    /* Active dot slightly less bright */
 }
 
 /* --- Modal Styling (Should be present from OMIW-10) --- */
 /* Ensure .modal-overlay, .modal-content, etc. styles are still here */
 .modal-overlay {
-    position: fixed; /* Stay in place */
+    position: fixed;
+    /* Stay in place */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-    display: flex; /* Use flexbox for centering */
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Semi-transparent background */
+    display: flex;
+    /* Use flexbox for centering */
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Ensure it's on top */
-    opacity: 0; /* Start hidden */
+    z-index: 1000;
+    /* Ensure it's on top */
+    opacity: 0;
+    /* Start hidden */
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
@@ -361,15 +483,18 @@ body::after {
 }
 
 .modal-content {
-    background-color: #1f1f2e; /* Darker modal background */
+    background-color: #1f1f2e;
+    /* Darker modal background */
     padding: 30px 40px;
     border-radius: 15px;
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
     text-align: center;
     max-width: 90%;
-    width: 400px; /* Adjust max width */
+    width: 400px;
+    /* Adjust max width */
     color: #e0e0e0;
-    border: 1px solid rgba(255, 255, 255, 0.08); /* Less visible border */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    /* Less visible border */
 }
 
 .modal-content h2 {
@@ -396,7 +521,8 @@ body::after {
     margin-bottom: 25px;
     display: flex;
     justify-content: center;
-    gap: 15px; /* Space between buttons */
+    gap: 15px;
+    /* Space between buttons */
 }
 
 .modal-button {
@@ -414,7 +540,8 @@ body::after {
 }
 
 .modal-button.notion-button {
-    background-color: #555; /* Notion-like grey */
+    background-color: #555;
+    /* Notion-like grey */
     color: white;
 }
 
@@ -423,7 +550,8 @@ body::after {
 }
 
 .modal-button.todoist-button {
-    background-color: #e44332; /* Todoist red */
+    background-color: #e44332;
+    /* Todoist red */
     color: white;
 }
 
@@ -432,10 +560,12 @@ body::after {
 }
 
 .modal-button.close-button {
-    background-color: #6c4cff; /* Match copy button */
+    background-color: #6c4cff;
+    /* Match copy button */
     color: white;
     margin-top: 20px;
-    display: inline-block; /* Allow margin auto if needed */
+    display: inline-block;
+    /* Allow margin auto if needed */
 }
 
 .modal-button.close-button:hover {
