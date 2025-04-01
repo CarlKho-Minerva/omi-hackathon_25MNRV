@@ -9,6 +9,11 @@ const USER_ID = 'ckVQW3MVAoenlOdYhHLt5K3zPpW2'; // <<< REPLACE with your user ID
 // Global swiper instance
 let swiperInstance;
 
+// Calendar variables
+let currentCalendarDate = new Date();
+let selectedDate = new Date();
+const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
 // Function to initialize Swiper
 function initializeSwiper() {
     swiperInstance = new Swiper('.swiper-container', {
@@ -39,18 +44,188 @@ function setupCalendarButton() {
     const calendarButton = document.getElementById('calendar-button');
     if (calendarButton) {
         calendarButton.addEventListener('click', function() {
-            // Show a date picker or custom date selection UI
-            const today = new Date();
-            const dateStr = prompt('Enter date (YYYY-MM-DD):', 
-                `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`);
-            
-            if (dateStr && isValidDateFormat(dateStr)) {
-                loadReflectionData(dateStr);
-            } else if (dateStr) {
-                alert('Please use the format YYYY-MM-DD');
-            }
+            // Show the calendar overlay instead of prompt
+            showCalendar();
         });
     }
+}
+
+// Show calendar overlay
+function showCalendar() {
+    const calendarOverlay = document.getElementById('calendar-overlay');
+    
+    // Reset calendar to current month/year before showing
+    currentCalendarDate = new Date(); // Reset to current month view
+    updateCalendar();
+    
+    // Set today as selected by default
+    selectedDate = new Date();
+    
+    if (calendarOverlay) {
+        calendarOverlay.style.display = 'flex';
+        setTimeout(() => {
+            calendarOverlay.classList.add('visible');
+        }, 10);
+    }
+}
+
+// Hide calendar overlay
+function hideCalendar() {
+    const calendarOverlay = document.getElementById('calendar-overlay');
+    if (calendarOverlay) {
+        calendarOverlay.classList.remove('visible');
+        setTimeout(() => {
+            calendarOverlay.style.display = 'none';
+        }, 300);
+    }
+}
+
+// Setup calendar functionality
+function setupCalendar() {
+    // Get calendar elements
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+    const cancelBtn = document.getElementById('calendar-cancel');
+    const selectBtn = document.getElementById('calendar-select');
+    
+    // Add event listeners
+    if (prevMonthBtn) {
+        prevMonthBtn.addEventListener('click', () => {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            updateCalendar();
+        });
+    }
+    
+    if (nextMonthBtn) {
+        nextMonthBtn.addEventListener('click', () => {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            updateCalendar();
+        });
+    }
+    
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', hideCalendar);
+    }
+    
+    if (selectBtn) {
+        selectBtn.addEventListener('click', () => {
+            // Format selected date as YYYY-MM-DD
+            const dateStr = formatDateForAPI(selectedDate);
+            
+            // Load reflection data for selected date
+            loadReflectionData(dateStr);
+            hideCalendar();
+        });
+    }
+    
+    // Initial calendar render
+    updateCalendar();
+}
+
+// Format date as YYYY-MM-DD for API
+function formatDateForAPI(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// Update calendar display
+function updateCalendar() {
+    // Update month/year title
+    const monthYearElement = document.getElementById('calendar-month-year');
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                         'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    if (monthYearElement) {
+        const month = monthNames[currentCalendarDate.getMonth()];
+        const year = currentCalendarDate.getFullYear();
+        monthYearElement.textContent = `${month} ${year}`;
+    }
+    
+    // Generate calendar grid
+    const calendarGrid = document.getElementById('calendar-grid');
+    if (!calendarGrid) return;
+    
+    // Clear existing content
+    calendarGrid.innerHTML = '';
+    
+    // Add weekday headers
+    weekdays.forEach(weekday => {
+        const weekdayElement = document.createElement('div');
+        weekdayElement.className = 'calendar-weekday';
+        weekdayElement.textContent = weekday;
+        calendarGrid.appendChild(weekdayElement);
+    });
+    
+    // Get first day of month and last day of month
+    const firstDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), 1);
+    const lastDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() + 1, 0);
+    
+    // Get day of week of first day (0 = Sunday, 6 = Saturday)
+    const firstDayOfWeek = firstDay.getDay();
+    
+    // Add days from previous month to fill first row
+    const prevMonthLastDay = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), 0).getDate();
+    for (let i = 0; i < firstDayOfWeek; i++) {
+        const day = prevMonthLastDay - firstDayOfWeek + i + 1;
+        addDayToCalendar(day, 'other-month', new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() - 1, day));
+    }
+    
+    // Add days of current month
+    const today = new Date();
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+        const currentDate = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), i);
+        
+        // Determine classes
+        let classes = '';
+        if (isDateEqual(currentDate, today)) {
+            classes += ' today';
+        }
+        if (isDateEqual(currentDate, selectedDate)) {
+            classes += ' selected';
+        }
+        
+        addDayToCalendar(i, classes, currentDate);
+    }
+    
+    // Add days from next month to complete the grid
+    const totalCells = Math.ceil((firstDayOfWeek + lastDay.getDate()) / 7) * 7;
+    const remainingCells = totalCells - (firstDayOfWeek + lastDay.getDate());
+    
+    for (let i = 1; i <= remainingCells; i++) {
+        addDayToCalendar(i, 'other-month', new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() + 1, i));
+    }
+}
+
+// Add a day element to the calendar grid
+function addDayToCalendar(day, classes, date) {
+    const calendarGrid = document.getElementById('calendar-grid');
+    const dayElement = document.createElement('div');
+    dayElement.className = `calendar-day${classes ? ' ' + classes : ''}`;
+    dayElement.textContent = day;
+    
+    // Add click handler to select the date
+    dayElement.addEventListener('click', () => {
+        // Remove selected class from previously selected date
+        const selectedDays = document.querySelectorAll('.calendar-day.selected');
+        selectedDays.forEach(el => el.classList.remove('selected'));
+        
+        // Add selected class to clicked date
+        dayElement.classList.add('selected');
+        
+        // Update selected date
+        selectedDate = new Date(date);
+    });
+    
+    calendarGrid.appendChild(dayElement);
+}
+
+// Check if two dates are the same day (ignoring time)
+function isDateEqual(date1, date2) {
+    return date1.getDate() === date2.getDate() && 
+           date1.getMonth() === date2.getMonth() && 
+           date1.getFullYear() === date2.getFullYear();
 }
 
 // Validate date format
@@ -60,11 +235,6 @@ function isValidDateFormat(dateStr) {
 }
 
 // Enhanced version of loadReflectionData that accepts a date parameter
-async function loadReflectionData(customDate = null) {
-    // ... existing code ...
-}
-
-// REPLACE the existing loadReflectionData function with this one:
 async function loadReflectionData(customDate = null) {
     const loadingIndicator = document.getElementById('loading-indicator');
     const swiperContainer = document.getElementById('reflection-swiper');
@@ -186,7 +356,11 @@ async function loadReflectionData(customDate = null) {
                     <p>Loading tasks...</p>
                 </div>
                 <button id="copy-tasks-button" style="margin-top: 20px; padding: 10px 20px; display: none;">Copy Selected Tasks</button> <!-- Initially hidden -->
-                <button id="back-button" class="back-button">Return to Previous Slide</button>
+                <button id="back-button" class="back-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+                    </svg>
+                </button>
              </div>`;
 
         // Inject the generated HTML into the swiper wrapper
@@ -394,6 +568,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Setup the calendar button functionality
     setupCalendarButton();
+    
+    // Setup calendar
+    setupCalendar();
 
     // --- Add Modal Close Listener ---
     const modalCloseButton = document.getElementById('modal-close-button');
@@ -407,6 +584,16 @@ document.addEventListener('DOMContentLoaded', () => {
         modalOverlay.addEventListener('click', (event) => {
             if (event.target === modalOverlay) { // Check if click was directly on the overlay
                 hideModal();
+            }
+        });
+    }
+    
+    // Add click handler to close calendar when clicking outside
+    const calendarOverlay = document.getElementById('calendar-overlay');
+    if (calendarOverlay) {
+        calendarOverlay.addEventListener('click', (event) => {
+            if (event.target === calendarOverlay) {
+                hideCalendar();
             }
         });
     }

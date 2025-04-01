@@ -175,8 +175,6 @@ body::after {
     height: 100%;
     padding: 60px 40px;
     /* Increased padding for breathability */
-    overflow-y: auto;
-    /* Allow vertical scroll *within* a slide if needed */
     background: transparent;
     /* Use body gradient */
     position: relative;
@@ -187,6 +185,151 @@ body::after {
 /* .swiper-slide { transition: opacity 0.3s ease-in-out; } */
 /* Handled by Swiper usually */
 
+/* Calendar overlay styling */
+.calendar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.calendar-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.calendar-container {
+    background-color: #1f1f2e;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    max-width: 320px;
+    width: 100%;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.calendar-title {
+    color: #ffffff;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.calendar-nav {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar-nav-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+    font-size: 1.2em;
+    transition: background-color 0.2s ease;
+}
+
+.calendar-nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-weekday {
+    text-align: center;
+    font-size: 0.8em;
+    color: #9a9a9a;
+    padding: 5px 0;
+}
+
+.calendar-day {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 50%;
+    color: #e0e0e0;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
+
+.calendar-day:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.calendar-day.today {
+    border: 1px solid #9a86ff;
+}
+
+.calendar-day.selected {
+    background-color: #9a86ff;
+    color: white;
+}
+
+.calendar-day.other-month {
+    color: #5a5a5a;
+}
+
+.calendar-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+    gap: 10px;
+}
+
+.calendar-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.calendar-btn.cancel {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+}
+
+.calendar-btn.cancel:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.calendar-btn.select {
+    background-color: #9a86ff;
+    color: white;
+}
+
+.calendar-btn.select:hover {
+    background-color: #8a76ef;
+}
 
 /* --- Slide-Specific Content Styling --- */
 
@@ -331,7 +474,7 @@ body::after {
     color: #f0f0f0;
     padding: 25px;
     /* Increased padding */
-    border-left: 5px solid #8a76ef;
+    border-left: 5px solid #ffffff;
     /* Slightly softer accent */
     background-color: rgba(255, 255, 255, 0.04);
     /* Less visible */
@@ -351,37 +494,64 @@ body::after {
     padding-top: 60px;
     padding-bottom: 100px;
     /* More space for button */
+    overflow: visible !important; /* Added to ensure it doesn't clip */
 }
 
 #task-list-container {
-    height: 50vh;
-    /* Example: Use viewport height units for relative sizing */
-    /* Ensure other styles from OMIW-9 are here */
+    height: 300px;
     width: 90%;
     max-width: 500px;
     flex-grow: 0;
-    /* Don't let it grow, use fixed height */
     position: relative;
     margin-bottom: 25px;
-    /* Increased margin */
     border: 1px solid rgba(255, 255, 255, 0.08);
-    /* Less visible border */
     border-radius: 10px;
+    overflow-y: auto;
+
+    /* Apply scrollbar styles directly */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+
+    /* Apply mask directly */
+    -webkit-mask-image: linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%);
+    mask-image: linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
+/* Scrollbar width */
+#task-list-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Scrollbar track */
+#task-list-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin: 10px 0; /* Keep margin for padding effect */
+}
+
+/* Scrollbar thumb (the draggable part) */
+#task-list-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+/* Scrollbar thumb hover */
+#task-list-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .scrollable-tasks {
-    height: 100%;
-    overflow-y: auto;
+    /* Removed height: 100%; */
+    /* Removed overflow-y: auto; */
     padding: 20px;
-    /* Increased padding */
-    padding-top: 35px;
-    /* Padding for top gradient */
-    padding-bottom: 35px;
-    /* Padding for bottom gradient */
-    -webkit-mask-image: linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%);
-    mask-image: linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%);
-    /* Adjust % for fade size */
+    /* padding-top: 45px; */
+    padding-bottom: 45px;
+    /* Removed mask-image properties */
+    /* Removed scrollbar styles */
 }
+
+/* Removed scrollbar styles for .scrollable-tasks */
 
 /* Ensure .task-item, label, input, .task-source styles from OMIW-9 are present */
 /* Styling for individual task items */
@@ -456,8 +626,8 @@ body::after {
     padding: 12px 25px;
     font-size: 1em;
     font-weight: bold;
-    color: #ffffff;
-    background-color: #6c4cff;
+    color: #141414;
+    background-color: #ffffff;
     /* Slightly adjusted color */
     border: none;
     border-radius: 25px;
@@ -469,11 +639,11 @@ body::after {
 }
 
 #copy-tasks-button:hover {
-    background-color: #5a3ff0;
+    background-color: #b8b8b8;
 }
 
 #copy-tasks-button:active {
-    background-color: #4a2fe0;
+    background-color: #9a9a9a;
 }
 
 
@@ -634,30 +804,38 @@ body::after {
 }
 
 /* --- Task List Non-Scrollable & Back Button --- */
-.story-slide-tasks {
-    overflow-y: hidden !important;
-}
+/* Custom Scrollbar Styling */
+/* Added scrollbar styles back for .scrollable-tasks */
+
+/* Firefox scrollbar styling */
+/* Added scrollbar styles back for .scrollable-tasks */
 
 .back-button {
-    position: absolute;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 20px;
-    background-color: #6c4cff;
-    color: white;
+    position: fixed;
+    right: 15px;
+    bottom: 250px; /* Position it below the pagination dots */
+    z-index: 100;
+    transform: rotate(-90deg); /* Position the arrow horizontally */
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
     border: none;
-    border-radius: 25px;
-    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    z-index: 50;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .back-button:hover {
-    background-color: #5a3ff0;
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-.back-button:active {
-    background-color: #4a2fe0;
+.back-button svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+    transform: rotate(90deg); /* Make arrow point up for "go back" */
 }
