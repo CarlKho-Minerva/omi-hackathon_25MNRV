@@ -53,7 +53,11 @@ async function loadReflectionData() {
     // For now, using hardcoded USER_ID and today's date
     // TODO: In future, might get USER_ID from Omi context if possible, or implement login
     const today = new Date();
-    const dateStr = today.toISOString().split('T')[0]; // Format YYYY-MM-DD
+    // Construct YYYY-MM-DD from local date components to avoid timezone issues with toISOString()
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const day = String(today.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
     const userId = USER_ID; // Using the constant defined above
 
     // --- Construct API URL ---
