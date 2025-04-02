@@ -117,7 +117,7 @@ def process_transcript_with_openai(transcript: str) -> dict:
     """
     try:
         response = openai_client.chat.completions.create(
-            model="gpt-3.5-turbo-0125", # Or gpt-4 if preferred/available
+            model="gpt-4o-mini",
             response_format={ "type": "json_object" },
             messages=[
                 {"role": "system", "content": "You are an AI assistant analyzing daily conversation transcripts. Output structured JSON containing insightful summaries, actionable items, learned concepts, and supportive advice."},
