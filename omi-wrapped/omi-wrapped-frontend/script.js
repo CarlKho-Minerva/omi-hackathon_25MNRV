@@ -356,11 +356,7 @@ async function loadReflectionData(customDate = null) {
                     <p>Loading tasks...</p>
                 </div>
                 <button id="copy-tasks-button" style="margin-top: 20px; padding: 10px 20px; display: none;">Copy Selected Tasks</button> <!-- Initially hidden -->
-                <button id="back-button" class="back-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
-                    </svg>
-                </button>
+                
              </div>`;
 
         // Inject the generated HTML into the swiper wrapper

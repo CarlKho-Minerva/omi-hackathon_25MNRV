@@ -7,6 +7,7 @@ from google.cloud import firestore
 from google.api_core.exceptions import GoogleAPICallError, NotFound
 import openai
 import httpx # Import httpx
+import pytz 
 
 from dotenv import load_dotenv
 
@@ -172,10 +173,50 @@ def daily_process_memories(request):
     if user_id == "ckVQW3MVAoenlOdYhHLt5K3zPpW2":
          logging.warning("Using default test user ID. Set TARGET_USER_ID env var or pass 'uid' query param.")
 
-    # Get date (default to yesterday, assuming job runs early morning, or today if run at night)
-    # Let's assume it runs EOD/night for "today's" reflection
-    target_date_str = request.args.get("date", datetime.now(timezone.utc).strftime('%Y-%m-%d'))
-    logging.info(f"Processing reflections for User ID: {user_id}, Date: {target_date_str}")
+    # Check if a specific date was passed via query parameter
+    explicit_date_str = request.args.get("date")
+
+    if explicit_date_str:
+        # Use the explicitly provided date (e.g., for testing past dates)
+        target_date_str = explicit_date_str
+        logging.info(f"Processing reflections for User ID: {user_id}, Using explicit Date: {target_date_str}")
+    else:
+        # No date provided (likely triggered by scheduler), calculate based on target timezone
+        try:
+            # Define the target timezone (e.g., Pacific Time)
+            target_tz_name = "America/Los_Angeles" # Pacific Time zone
+            target_tz = pytz.timezone(target_tz_name)
+
+            # Get the current time in UTC
+            now_utc = datetime.now(timezone.utc)
+
+            # Convert current UTC time to the target timezone
+            now_target_tz = now_utc.astimezone(target_tz)
+
+            # --- Decide which day to process ---
+            # If the job runs late at night (e.g., 9 PM PT), 'now_target_tz.date()' IS the day we want to process.
+            # If the job runs early morning (e.g., 2 AM PT), 'now_target_tz.date()' is technically the *next* day,
+            # so we actually want to process the day *before* 'now_target_tz.date()'.
+
+            # Let's assume the scheduler runs EOD/Night (like 9 PM PT).
+            # In this case, the date part of the current time in the target timezone IS the correct date to process.
+            target_date = now_target_tz.date()
+
+            # --- Alternative logic if running EARLY morning (e.g., 2 AM PT) ---
+            # If you schedule the job for after midnight in your local time (e.g., 2 AM PT),
+            # you want the *previous* day's data. Uncomment the next two lines in that case:
+            # target_date = now_target_tz.date() - timedelta(days=1)
+            # logging.info(f"Scheduler running early morning, processing previous day: {target_date.strftime('%Y-%m-%d')}")
+            # --- End Alternative logic ---
+
+            target_date_str = target_date.strftime('%Y-%m-%d')
+            logging.info(f"Processing reflections for User ID: {user_id}, Calculated Target Date ({target_tz_name}): {target_date_str}")
+
+        except Exception as e:
+            logging.error(f"Error calculating target date: {e}. Falling back to UTC date.")
+            # Fallback to UTC date on error, although this might process the wrong day
+            target_date_str = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+            logging.warning(f"Processing reflections for User ID: {user_id}, Using UTC Date Fallback: {target_date_str}")
 
     # --- Read Raw Memories from Firestore ---
     full_day_transcript = ""
