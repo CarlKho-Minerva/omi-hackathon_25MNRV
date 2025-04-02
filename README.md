@@ -1,6 +1,12 @@
-# Omi Wrapped - Your Personalized AI Mentor, Wrapped Daily.
+# Omi Wrapped - Daily Summaries
 
-[![Cover Image of Omi Wrapped App]([COVER_IMAGE_URL_HERE])]([PROJECT_WEBSITE_URL_HERE])
+[👀 Watch Demo Video](https://youtu.be/ixgcrmn5wCA)
+
+![alt text](image.png)
+
+[Link to Live Demo on Omi's App Store](https://h.omi.me/apps/01JQPRVT35CMBER3NAQ36KD7N9). 
+
+[Alternative link.](https://storage.googleapis.com/bucket-omi-wrapped/index.html)
 
 ```mermaid
 graph LR
