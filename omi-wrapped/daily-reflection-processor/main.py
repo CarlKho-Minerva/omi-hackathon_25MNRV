@@ -83,9 +83,9 @@ def process_transcript_with_openai(transcript: str) -> dict:
         2.  "summary": A brief summary (2-4 sentences) capturing the essence of the user's day, highlighting key interactions, activities, or expressed feelings mentioned in the transcript. Make it feel personal *to the user*.
         3.  "gratitude_points": A JSON array of 2-3 specific strings highlighting positive moments, instances of connection, kindness received/given, or accomplishments *explicitly mentioned or clearly inferable from the conversations*. Phrase these as prompts for gratitude, referencing the specific context where possible (e.g., "Remember the supportive comment you received during the project discussion," "Appreciate the shared laugh about [topic]").
         4.  "learned_terms": A JSON array of objects. Identify unique jargon, technical terms, names, or concepts mentioned that the user might want a quick reminder of. For each, provide a brief definition/context *based on how it was used in the conversation*. Format: [{{"term": "...", "definition": "..."}}]. Limit to 3-5 key terms.
-        5.  "little_things": A JSON array of objects. Identify small, potentially actionable observations based on preferences, desires, needs, or passing comments *mentioned by the user or others in the conversations*. Link the `mention` directly to a specific conversational context. The `suggested_action` should be a thoughtful, personalized suggestion for a small act of kindness, self-care, or remembrance inspired *by that specific moment*. **Since speaker diarization is unavailable, refer to others generally (e.g., "the person you spoke with about X," "someone mentioned...")**. Format: [{{"mention": "...", "suggested_action": "..."}}]. Limit to 2-4 items.
-        6.  "mentor_advice": Provide a single, constructive, concise, and *empathetic* piece of advice (1-2 sentences) rooted in specific patterns, challenges, or opportunities observed *in the user's interactions* throughout the day. Focus on communication, well-being, goals, or relationships. Frame it supportively.
-        7.  "action_items": A JSON array of strings, listing clear, concrete action items or tasks that were *explicitly stated* in the conversations as needing to be done *by the user*, or assigned to them. Do not include suggestions from 'little_things' here. Ensure these are direct obligations mentioned.
+        5.  "little_things": A JSON array of objects. Identify small, potentially actionable observations based on preferences, desires, needs, or passing comments *mentioned by the user or others in the conversations*. Link the `mention` directly to a specific conversational context. The `suggested_action` should be a thoughtful, personalized suggestion for a small act of kindness, self-care, or remembrance inspired *by that specific moment*. **Since speaker diarization is unavailable, refer to others generally (e.g., "the person you spoke with about X," "someone mentioned...")**. Format: [{{"mention": "...", "suggested_action": "..."}}]. Limit to 2-4 items. The goal is to spread love.
+        6.  "mentor_advice": Provide a single, constructive, concise, and hard-to-swallow but needed-to-hear piece of advice (1-2 sentences) rooted in specific patterns, challenges, or opportunities observed *in the user's interactions* throughout the day. Specifically cite that interaction. Focus on communication, well-being, goals, or relationships. Frame it supportively.
+        7.  "action_items": A JSON array of strings, listing clear, granular, generous amount, concrete action items or tasks that were *explicitly stated* in the conversations as needing to be done *by the user*, or assigned to them. Do not include suggestions from 'little_things' here. Ensure these are direct obligations mentioned. Feel free to create multiple tasks, the user will curate these later, so dont forget the tiniest details.
 
         Transcript(s):
         "{transcript}"
@@ -113,6 +113,8 @@ def process_transcript_with_openai(transcript: str) -> dict:
         "action_items": [
             "Send the meeting minutes to the project team.",
             "Draft the initial SOP document by Friday."
+            "Follow up with the person you spoke with about the Kanban Board setup.",
+
         ]
         }}
     """
@@ -121,7 +123,7 @@ def process_transcript_with_openai(transcript: str) -> dict:
             model="gpt-4o-mini",
             response_format={ "type": "json_object" },
             messages=[
-                {"role": "system", "content": "You are an AI assistant analyzing daily conversation transcripts. Output structured JSON containing insightful summaries, actionable items, learned concepts, and supportive advice."},
+                {"role": "system", "content": "You are an AI assistant analyzing daily conversation transcripts. Output structured JSON containing insightful summaries, actionable items (be detailed on the tasks, be succinct with the rest), learned concepts, and supportive advice."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=1000, # Increase if summaries/lists get truncated

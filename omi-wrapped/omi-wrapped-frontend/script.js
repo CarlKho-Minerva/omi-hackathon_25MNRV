@@ -342,7 +342,7 @@ async function loadReflectionData(customDate = null) {
         // Slide 5: Advice from your Omi Mentor
         slidesHtml += `
             <div class="swiper-slide story-slide-advice" id="slide-advice">
-                <h1>Your Mentor's Advice</h1>
+                <h1>Omi's Mentor Advice</h1>
                 <p class="advice-quote">"${escapeHtml(data.mentor_advice || 'Keep reflecting and growing!')}"</p>
             </div>`;
 
