@@ -287,7 +287,7 @@ async function loadReflectionData(customDate = null) {
                 <div class="no-data-message">
                     <h2>No memories found</h2>
                     <p>There are no recorded conversations for ${dayName}, ${monthDay}, ${today.getFullYear()}.</p>
-                    <p>Try selecting a different date from the calendar or check yesterday's reflections.</p>
+                    <p>or you can re-visit at 9PM PST. <i>WIP: Push Notifications.</i></p>
                     <div class="no-data-buttons">
                         <button id="try-yesterday-btn" class="action-button">Try Yesterday</button>
                         <button id="open-calendar-btn" class="action-button">Open Calendar</button>
