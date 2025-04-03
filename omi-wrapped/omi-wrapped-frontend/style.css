@@ -771,3 +771,64 @@ body::after {
     fill: white;
     transform: rotate(90deg);
 }
+
+/* Styles for No Data Message */
+.no-data-message {
+    text-align: center;
+    padding: 2rem;
+    /* background-color: #161616; */
+    border-radius: 10px;
+    max-width: 90%;
+    margin: 0 auto;
+    /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); */
+    /* border: 1px solid rgba(255, 255, 255, 0.08); */
+}
+
+.no-data-message h2 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.no-data-message p {
+    margin-bottom: 1rem;
+    color: #c8c8c8;
+}
+
+.no-data-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.action-button {
+    background-color: #5b86e5;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.action-button:hover {
+    background-color: #4a75d4;
+}
+
+#try-yesterday-btn {
+    background-color: #9a86ff;
+}
+
+#try-yesterday-btn:hover {
+    background-color: #8a76ef;
+}
+
+#open-calendar-btn {
+    color: black;
+    background-color: #ffffff;
+}
+
+#open-calendar-btn:hover {
+    background-color: #f0f0f0;
+}

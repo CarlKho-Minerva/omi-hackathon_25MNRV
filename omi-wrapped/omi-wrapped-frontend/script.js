@@ -276,7 +276,39 @@ async function loadReflectionData(customDate = null) {
             // Handle HTTP errors (like 404 Not Found, 500 Internal Server Error)
             const errorText = await response.text();
             console.error(`API Error ${response.status}: ${errorText}`);
-            loadingIndicator.textContent = `Error: Could not load reflection (${response.status}). Try again later.`;
+            
+            // Create a more user-friendly message for 404/500 errors (no data found case)
+            // Also add a "Try Yesterday" button
+            const today = new Date();
+            const dayName = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(today);
+            const monthDay = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric' }).format(today);
+            
+            let noDataHtml = `
+                <div class="no-data-message">
+                    <h2>No memories found</h2>
+                    <p>There are no recorded conversations for ${dayName}, ${monthDay}, ${today.getFullYear()}.</p>
+                    <p>Try selecting a different date from the calendar or check yesterday's reflections.</p>
+                    <div class="no-data-buttons">
+                        <button id="try-yesterday-btn" class="action-button">Try Yesterday</button>
+                        <button id="open-calendar-btn" class="action-button">Open Calendar</button>
+                    </div>
+                </div>
+            `;
+            
+            loadingIndicator.innerHTML = noDataHtml;
+            
+            // Add event listeners for the buttons
+            document.getElementById('try-yesterday-btn').addEventListener('click', () => {
+                // Calculate yesterday's date
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                loadReflectionData(formatDateForAPI(yesterday));
+            });
+            
+            document.getElementById('open-calendar-btn').addEventListener('click', () => {
+                showCalendar();
+            });
+            
             return; // Stop execution
         }
 
