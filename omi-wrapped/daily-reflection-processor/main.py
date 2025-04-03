@@ -77,6 +77,8 @@ def process_transcript_with_openai(transcript: str) -> dict:
     prompt = f"""
         Analyze the following conversation transcript(s) from an entire day captured by the Omi Device V2. Your goal is to provide insights that are personalized, supportive, and encourage reflection and gratitude. Focus on extracting meaning and actionable observations *directly* from the user's interactions.
 
+        IMPORTANT: Capture EVERY SINGLE action item mentioned in the conversations. Don't miss any tasks or obligations!
+
         Provide the following details in JSON format:
 
         1.  "daily_emoji": Suggest a single standard emoji that best represents the overall mood or primary theme of the user's day *as reflected in their conversations*.
@@ -85,12 +87,14 @@ def process_transcript_with_openai(transcript: str) -> dict:
         4.  "learned_terms": A JSON array of objects. Identify unique jargon, technical terms, names, or concepts mentioned that the user might want a quick reminder of. For each, provide a brief definition/context *based on how it was used in the conversation*. Format: [{{"term": "...", "definition": "..."}}]. Limit to 3-5 key terms.
         5.  "little_things": A JSON array of objects. Identify small, potentially actionable observations based on preferences, desires, needs, or passing comments *mentioned by the user or others in the conversations*. Link the `mention` directly to a specific conversational context. The `suggested_action` should be a thoughtful, personalized suggestion for a small act of kindness, self-care, or remembrance inspired *by that specific moment*. **Since speaker diarization is unavailable, refer to others generally (e.g., "the person you spoke with about X," "someone mentioned...")**. Format: [{{"mention": "...", "suggested_action": "..."}}]. Limit to 2-4 items. The goal is to spread love.
         6.  "mentor_advice": Provide a single, constructive, concise, and hard-to-swallow but needed-to-hear piece of advice (1-2 sentences) rooted in specific patterns, challenges, or opportunities observed *in the user's interactions* throughout the day. Specifically cite that interaction. Focus on communication, well-being, goals, or relationships. Frame it supportively.
-        7.  "action_items": A JSON array of strings, listing clear, granular, generous amount, concrete action items or tasks that were *explicitly stated* in the conversations as needing to be done *by the user*, or assigned to them. Do not include suggestions from 'little_things' here. Ensure these are direct obligations mentioned. Feel free to create multiple tasks, the user will curate these later, so dont forget the tiniest details.
+        7.  "action_items": A JSON array of strings, listing EVERY SINGLE action item or task that was *explicitly stated* in the conversations as needing to be done *by the user*, or assigned to them. Be extremely thorough and capture ALL tasks mentioned, even small ones. Extract as many action items as possible, including the tiniest details and obligations. Nothing is too small to include. Do not include suggestions from 'little_things' here. Focus on direct obligations or commitments mentioned in the conversation.
 
         Transcript(s):
         "{transcript}"
 
         Return ONLY the valid JSON object. Ensure all keys are present, even if arrays are empty ([]).
+
+        CRITICAL REMINDER: Include EVERY SINGLE action item you can identify in the conversation. Be extremely generous with the quantity of action items - the user wants a comprehensive list and will curate it later.
 
         Example JSON format reflecting the enhanced requirements:
         {{
@@ -112,9 +116,12 @@ def process_transcript_with_openai(transcript: str) -> dict:
         "mentor_advice": "It's great you're connecting with colleagues! Remember to also schedule short breaks during busy days to maintain your energy and focus.",
         "action_items": [
             "Send the meeting minutes to the project team.",
-            "Draft the initial SOP document by Friday."
+            "Draft the initial SOP document by Friday.",
             "Follow up with the person you spoke with about the Kanban Board setup.",
-
+            "Reply to the email about the conference registration.",
+            "Check inventory levels for the upcoming project.",
+            "Schedule the team lunch mentioned during morning chat.",
+            "Update your calendar with the new deadline date."
         ]
         }}
     """
